@@ -21,20 +21,18 @@ samples, guidance on mobile development, and a full API reference.
 
 ![Prototype](./documentation/wireframe_prototype.gif)
 
-![Splash Screen](./documentation/Splash\ Screen.png)
+![Splash Screen](./documentation/splash_screen.png)
 
-![Login and Register](./documentation/Login\ and\ Register.png)
+![Login and Register](./documentation/login_and_register.png)
 
-![Meal Plan](./documentation/Meal\ Plan.png)
+![Meal Plan](./documentation/meal_plan.png)
 
-![Pantry](./documentation/Pantry.png)
+![Pantry](./documentation/pantry.png)
 
-![Search Recipes](./documentation/Search\ Recipes.png)
+![Search Recipes](./documentation/search_recipes.png)
 
-![Filter Recipes](./documentation/Filter\ Recipes.png)
+![Filter Recipes](./documentation/filter_recipes.png)
 
-![Recipe Details](./documentation/Recipe\ Details.png)
+![Recipe Details](./documentation/recipe_details.png)
 
-![Recipe Details](./documentation/Recipe\ Details.png)
-
-![Profile](./documentation/Profile.png)
+![Profile](./documentation/profile.png)
