@@ -21,18 +21,18 @@ samples, guidance on mobile development, and a full API reference.
 
 ![Prototype](./documentation/wireframe_prototype.gif)
 
-![Splash Screen](./documentation/splash_screen.png)
+<img src="./documentation/splash_screen.png" width=250>
 
-![Login and Register](./documentation/login_and_register.png)
+<img src="./documentation/login_and_register.png" width=250>
 
-![Meal Plan](./documentation/meal_plan.png)
+<img src="./documentation/meal_plan.png" width=250>
 
-![Pantry](./documentation/pantry.png)
+<img src="./documentation/pantry.png" width=250>
 
-![Search Recipes](./documentation/search_recipes.png)
+<img src="./documentation/search_recipes.png" width=250>
 
-![Filter Recipes](./documentation/filter_recipes.png)
+<img src="./documentation/filter_recipes.png" width=250>
 
-![Recipe Details](./documentation/recipe_details.png)
+<img src="./documentation/recipe_details.png" width=250>
 
-![Profile](./documentation/profile.png)
+<img src="./documentation/profile.png" width=250>
