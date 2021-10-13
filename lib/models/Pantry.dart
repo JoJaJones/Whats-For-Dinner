@@ -7,12 +7,14 @@ class Pantry {
     pantryItems = new Map<String, IngredientType>();
   }
 
-  void addIngredient(String name, double quantity, [DateTime expiration = null]){
+  bool addIngredient(String name, double quantity, [DateTime expiration = null]){
     if(pantryItems.containsKey(name)){
       pantryItems[name].addIngredient(quantity, expiration);
     } else {
       _addNewIngredient(name, quantity, expiration != null, expiration);
     }
+
+    return true;
   }
   
   void _addNewIngredient(
@@ -24,14 +26,19 @@ class Pantry {
     pantryItems[name].addIngredient(quantity, expiration);
   }
 
-  void removeIngredients(String name, double quantity){
+  bool removeIngredients(String name, double quantity){
     if(pantryItems.containsKey(name)){
       pantryItems[name].removeIngredient(quantity);
       if(pantryItems[name].isOutOfStock){
         pantryItems.remove(name);
       }
+      return true;
     }
+
+    return false;
   }
+
+  List<IngredientType> get ingredientsData => pantryItems.values.toList();
 
   List<String> get ingredientList => pantryItems.keys.toList();
 
