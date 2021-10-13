@@ -45,4 +45,6 @@ class IngredientType {
       }
     }
   }
+
+  bool get isOutOfStock => quantity <= 0;
 }

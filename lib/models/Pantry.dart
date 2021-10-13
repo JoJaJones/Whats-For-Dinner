@@ -23,7 +23,16 @@ class Pantry {
     pantryItems[name] = IngredientType(name, isPerishable);
     pantryItems[name].addIngredient(quantity, expiration);
   }
-  
+
+  void removeIngredients(String name, double quantity){
+    if(pantryItems.containsKey(name)){
+      pantryItems[name].removeIngredient(quantity);
+      if(pantryItems[name].isOutOfStock){
+        pantryItems.remove(name);
+      }
+    }
+  }
+
   List<String> get ingredientList => pantryItems.keys.toList();
 
   String get ingredientString => ingredientList.join(",");
