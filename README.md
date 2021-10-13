@@ -14,3 +14,25 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Design
+
+### Wireframes
+
+![Prototype](./documentation/wireframe_prototype.gif)
+
+<img src="./documentation/splash_screen.png" width=250>
+
+<img src="./documentation/login_and_register.png" width=250>
+
+<img src="./documentation/meal_plan.png" width=250>
+
+<img src="./documentation/pantry.png" width=250>
+
+<img src="./documentation/search_recipes.png" width=250>
+
+<img src="./documentation/filter_recipes.png" width=250>
+
+<img src="./documentation/recipe_details.png" width=250>
+
+<img src="./documentation/profile.png" width=250>
