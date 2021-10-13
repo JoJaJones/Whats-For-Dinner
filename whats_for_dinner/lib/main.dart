@@ -6,7 +6,7 @@ void main() {
 
 class App extends StatelessWidget {
   static final routes = {
-    
+
   };
   // This widget is the root of your application.
   @override
