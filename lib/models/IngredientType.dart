@@ -3,6 +3,14 @@ import 'package:whats_for_dinner/models/PerishableItem.dart';
 
 import 'FoodItem.dart';
 
+/// *******************************************************************
+/// Class to hold a collection of ingredients of the same type and
+/// allow manipulations of the ingredients it represents. (This class
+/// is meant to correctly handle perishable items since items purchased
+/// at different times may expire at different times either multiple
+/// copies of specific ingredients of the same type would need to be
+/// in the pantry or an organizing object is needed)
+/// *******************************************************************
 class IngredientType {
   String name;
   bool  isPerishable;

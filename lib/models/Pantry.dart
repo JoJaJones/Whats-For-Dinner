@@ -1,5 +1,9 @@
 import 'IngredientType.dart';
 
+/// *******************************************************************
+/// Data class for tracking all of the ingredients the user has added
+/// to their pantry
+/// *******************************************************************
 class Pantry {
   Map<String, IngredientType> pantryItems;
 

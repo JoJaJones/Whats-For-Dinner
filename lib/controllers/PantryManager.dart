@@ -1,6 +1,11 @@
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
 
+/// *******************************************************************
+/// Singleton to manage Pantry and allow access from any screen of
+/// the app. Will also load the pantry from firebase when the app is
+/// booted (if user is logged in) or upon user log in
+///*******************************************************************/
 class PantryManager {
   static final PantryManager _manager = PantryManager._internal();
 
