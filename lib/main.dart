@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
+  static final routes = {
+
+  };
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
