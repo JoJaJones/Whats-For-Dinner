@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/screens/pantry_screen.dart';
 import 'package:whats_for_dinner/screens/planner_screen.dart';
@@ -11,6 +12,9 @@ class Nav extends StatefulWidget {
 }
 
 class _NavState extends State<Nav> {
+  final _auth = FirebaseAuth.instance;
+  User loggedInUser;
+
   int _selectedScreen = 0;
   List<Widget> _screenOptions = <Widget>[
     PantryScreen(),
@@ -19,14 +23,27 @@ class _NavState extends State<Nav> {
     ProfileScreen(),
   ];
 
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void _onNavTap(int index) {
     setState(() {
+      print(loggedInUser.email);
       _selectedScreen = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    getCurrentUser();
     return Scaffold(
         appBar: AppBar(
           title: Text('What\'s for Dinner?'),
