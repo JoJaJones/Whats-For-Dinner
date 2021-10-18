@@ -5,8 +5,8 @@ import 'package:whats_for_dinner/nav.dart';
 class LoginScreen extends StatelessWidget {
   static const String id = 'login_screen';
   final _auth = FirebaseAuth.instance;
-  String email;
-  String password;
+  late String email;
+  late String password;
 
   @override
   Widget build(BuildContext context) {

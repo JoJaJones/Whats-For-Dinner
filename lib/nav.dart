@@ -13,7 +13,7 @@ class Nav extends StatefulWidget {
 
 class _NavState extends State<Nav> {
   final _auth = FirebaseAuth.instance;
-  User loggedInUser;
+  late User loggedInUser;
 
   int _selectedScreen = 0;
   List<Widget> _screenOptions = <Widget>[
