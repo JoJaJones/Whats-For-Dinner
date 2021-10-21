@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1086947955488",
+    "project_id": "whats-for-dinner-99fe7",
+    "storage_bucket": "whats-for-dinner-99fe7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086947955488:android:7fbf8ffcdf653f8a13bd45",
+        "android_client_info": {
+          "package_name": "com.capstone.whats_for_dinner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086947955488-kb2de6qufd1bjndgqhosj0e6cbm1jr3v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1X2lbkkNLmMFustIgekbwUqRJldBx8nM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086947955488-kb2de6qufd1bjndgqhosj0e6cbm1jr3v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
