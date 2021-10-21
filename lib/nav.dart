@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:whats_for_dinner/pantry_screen.dart';
-import 'package:whats_for_dinner/search_screen.dart';
-import 'package:whats_for_dinner/planner_screen.dart';
-import 'package:whats_for_dinner/profile_screen.dart';
+import 'package:whats_for_dinner/screens/pantry_screen.dart';
+import 'package:whats_for_dinner/screens/planner_screen.dart';
+import 'package:whats_for_dinner/screens/profile_screen.dart';
+import 'package:whats_for_dinner/screens/search_screen.dart';
 
 class Nav extends StatefulWidget {
   @override
