@@ -26,6 +26,7 @@ class Pantry {
       double quantity, 
       bool isPerishable, 
       DateTime expiration) {
+    // validate the ingredient using spoonacular API
     pantryItems[name] = IngredientType(name, isPerishable);
     pantryItems[name].addIngredient(quantity, expiration);
   }
