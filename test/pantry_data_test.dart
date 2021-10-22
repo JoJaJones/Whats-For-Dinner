@@ -25,7 +25,7 @@ void main(){
     var expiry = DateTime.now().add(const Duration(days: 365));
     expect(p.ingredientString, equals("${TOMATO},${CORN}")); // might need to be updated if sorting method (no sort) changes
     expect(p.ingredientCounts[CORN], moreOrLessEquals(5));
-    expect(isClose(p.pantryItems[CORN].items[0].expiration, expiry), equals(true));
+    expect(isClose(p.pantryItems[CORN]!.items[0].expiration, expiry), equals(true));
   });
 
   test("Add new perishable item", () {
@@ -33,7 +33,7 @@ void main(){
     p.addIngredient(BEANS, 2, now);
     expect(p.ingredientString, equals("${TOMATO},${CORN},${BEANS}")); // might need to be updated if sorting method (no sort) changes
     expect(p.ingredientCounts[BEANS], moreOrLessEquals(2));
-    expect(isClose(p.pantryItems[BEANS].items[0].expiration, now), equals(true));
+    expect(isClose(p.pantryItems[BEANS]!.items[0].expiration, now), equals(true));
   });
 
   test("Remove an item in increments", (){
@@ -46,8 +46,8 @@ void main(){
   });
 }
 
-bool isClose(DateTime time1, DateTime time2, [int dMilliSeconds = 1000]){
+bool isClose(DateTime? time1, DateTime? time2, [int dMilliSeconds = 1000]){
   Duration difference = Duration(milliseconds: dMilliSeconds);
-  return time1.isBefore(time2.add(difference))
+  return time1!.isBefore(time2!.add(difference))
       && time1.isAfter(time2.subtract(difference));
 }

@@ -7,13 +7,11 @@ import 'IngredientType.dart';
 class Pantry {
   Map<String, IngredientType> pantryItems;
 
-  Pantry(){
-    pantryItems = new Map<String, IngredientType>();
-  }
+  Pantry() : pantryItems = new Map<String, IngredientType>();
 
-  bool addIngredient(String name, double quantity, [DateTime expiration = null]){
+  bool addIngredient(String name, double quantity, [DateTime? expiration]){
     if(pantryItems.containsKey(name)){
-      pantryItems[name].addIngredient(quantity, expiration);
+      pantryItems[name]?.addIngredient(quantity, expiration);
     } else {
       _addNewIngredient(name, quantity, expiration != null, expiration);
     }
@@ -25,16 +23,16 @@ class Pantry {
       String name, 
       double quantity, 
       bool isPerishable, 
-      DateTime expiration) {
+      DateTime? expiration) {
     // validate the ingredient using spoonacular API
     pantryItems[name] = IngredientType(name, isPerishable);
-    pantryItems[name].addIngredient(quantity, expiration);
+    pantryItems[name]?.addIngredient(quantity, expiration);
   }
 
   bool removeIngredients(String name, double quantity){
     if(pantryItems.containsKey(name)){
-      pantryItems[name].removeIngredient(quantity);
-      if(pantryItems[name].isOutOfStock){
+      pantryItems[name]?.removeIngredient(quantity);
+      if(pantryItems[name]!.isOutOfStock){
         pantryItems.remove(name);
       }
       return true;

@@ -20,13 +20,12 @@ class PantryManager {
     return _manager;
   }
 
-  PantryManager._internal(){
-    pantry = Pantry();
+  PantryManager._internal() : pantry = Pantry(){
     // read from firebase DB and load pantry with contained data
   }
 
-  bool addItem(String name, double quantity, [DateTime expiry = null]){
-    bool isValid;
+  bool addItem(String name, double quantity, [DateTime? expiry]){
+    bool isValid = true;
     // check with API for validity
 
     // add item to pantry
@@ -37,7 +36,7 @@ class PantryManager {
   }
 
   bool removeItem(String name, double quantity) {
-    bool isValid;
+    bool isValid = false;
     // check api for validity
     if(pantry.removeIngredients(name, quantity) && isValid) {
       // remove item from pantry
@@ -49,4 +48,6 @@ class PantryManager {
   }
 
   List<IngredientType> get ingredients => pantry.ingredientsData;
+
+  int get size => ingredients.length;
 }

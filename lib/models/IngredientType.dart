@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:whats_for_dinner/models/NonperishableItem.dart';
 import 'package:whats_for_dinner/models/PerishableItem.dart';
 
@@ -16,9 +18,8 @@ class IngredientType {
   bool  isPerishable;
   List<FoodItem> items;
 
-  IngredientType(this.name, this.isPerishable) {
-    items = new List<FoodItem>();
-  }
+  IngredientType(this.name, this.isPerishable)
+      : items = new List<FoodItem>.empty(growable: true);
 
   double get quantity {
     double sum = 0;
@@ -29,7 +30,7 @@ class IngredientType {
     return sum;
   }
 
-  void addIngredient(double quantity, [DateTime expiration]){
+  void addIngredient(double quantity, [DateTime? expiration]){
     var newItem;
     if (isPerishable){
       newItem = PerishableItem(name, quantity, expiration);
@@ -55,4 +56,14 @@ class IngredientType {
   }
 
   bool get isOutOfStock => quantity <= 0;
+
+  DateTime get earliestExpiration {
+    DateTime expiration = items[0].expiration;
+    items.forEach((element) {
+      if(expiration!.compareTo(element.expiration) > 1) {
+        expiration = element.expiration;
+      }
+    });
+    return expiration ?? DateTime.utc(1900);
+  }
 }
