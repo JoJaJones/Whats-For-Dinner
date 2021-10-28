@@ -45,9 +45,6 @@ class _NavState extends State<Nav> {
   Widget build(BuildContext context) {
     getCurrentUser();
     return Scaffold(
-        appBar: AppBar(
-          title: Text('What\'s for Dinner?'),
-        ),
         body: IndexedStack(
           index: _selectedScreen,
           children: _screenOptions,
