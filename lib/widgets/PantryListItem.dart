@@ -5,18 +5,22 @@ import 'package:whats_for_dinner/widgets/components/SimpleComponents.dart';
 class PantryListItem extends StatelessWidget {
   IngredientType curIngredient;
   int index;
-  static const EXPIRY_ENABLED = false;
+  static const EXPIRY_ENABLED = true;
 
   PantryListItem(this.curIngredient, this.index);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: TitleText(curIngredient.name),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: createDetails(),
+    return Padding(
+      child: ListTile(
+        title: TitleText(curIngredient.name),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: createDetails(),
+        ),
+        tileColor: Color(Colors.lightBlueAccent.value),
       ),
+      padding: EdgeInsets.only(left: 6.0, right: 6.0, top: 6.0),
     );
   }
 

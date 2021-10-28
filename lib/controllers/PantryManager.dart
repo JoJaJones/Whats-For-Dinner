@@ -29,7 +29,7 @@ class PantryManager {
     // check with API for validity
 
     // add item to pantry
-
+    pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
 
     return isValid;
