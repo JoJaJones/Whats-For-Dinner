@@ -217,11 +217,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   void addIngredient() {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      print(data[nameKey]);
-      print(data[quantityKey]);
-      print(data[expiryKey]);
       var pantry = PantryManager();
-      print(pantry.size);
       if (_isPerishable) {
         pantry.addItem(data[nameKey], data[quantityKey], data[expiryKey]);
       } else {

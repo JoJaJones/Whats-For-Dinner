@@ -23,7 +23,13 @@ class _PantryScreenState extends State<PantryScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: PantryList(),
+      body: PantryList(refresh),
     );
+  }
+
+  void refresh(){
+    setState(() {
+
+    });
   }
 }
