@@ -49,5 +49,9 @@ class PantryManager {
 
   List<IngredientType> get ingredients => pantry.ingredientsData;
 
+  String get ingredientString => pantry.ingredientString;
+
+  Map<String, double> get ingredientCounts => pantry.ingredientCounts;
+
   int get size => ingredients.length;
 }

@@ -208,7 +208,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
 
   String? isNotEmpty(String? value){
     if(value == null || value.isEmpty){
-      return 'This fields is required';
+      return 'This field is required';
     }
 
     return null;
