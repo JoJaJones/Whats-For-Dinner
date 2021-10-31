@@ -58,7 +58,7 @@ class IngredientType {
   bool get isOutOfStock => quantity <= 0;
 
   DateTime get earliestExpiration {
-    DateTime expiration = items[0].expiration;
+    DateTime? expiration = items[0].expiration;
     items.forEach((element) {
       if(expiration!.compareTo(element.expiration) > 1) {
         expiration = element.expiration;

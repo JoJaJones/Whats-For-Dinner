@@ -29,7 +29,7 @@ class PantryManager {
     // check with API for validity
 
     // add item to pantry
-
+    pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
 
     return isValid;
@@ -48,6 +48,10 @@ class PantryManager {
   }
 
   List<IngredientType> get ingredients => pantry.ingredientsData;
+
+  String get ingredientString => pantry.ingredientString;
+
+  Map<String, double> get ingredientCounts => pantry.ingredientCounts;
 
   int get size => ingredients.length;
 }
