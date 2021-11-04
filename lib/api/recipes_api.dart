@@ -10,7 +10,7 @@ import 'package:whats_for_dinner/models/Recipe.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/Recipe.dart';
-import 'package:whats_for_dinner/utils/api_key.dart';
+import '../utils/api_key.dart';
 
 Future<String> readApiKey() async {
   return await rootBundle.loadString('./apikey');
