@@ -12,17 +12,33 @@ void main() async{
 
   /*
   test("Test getIngredients functionality", () async {
-    var res = await RecipesApi.getIngredients("apple");
+    var testIngredient = "apple";
+    var res = await RecipesApi.getIngredients(testIngredient);
     bool found = false;
     int status;
 
     status = res[RecipesApi.STATUS];
     if(status == 200) {
-      found = RecipesApi.validateIngredientRes("apple", res);
+      found = RecipesApi.validateIngredientRes(testIngredient, res);
     }
 
     if(status == 200) {
       expect(found, equals(true));
+    } else {
+      print(status);
+    }
+
+    testIngredient = "zzzzzzz";
+    res = await RecipesApi.getIngredients(testIngredient);
+    found = false;
+
+    status = res[RecipesApi.STATUS];
+    if(status == 200) {
+      found = RecipesApi.validateIngredientRes(testIngredient, res);
+    }
+
+    if(status == 200) {
+      expect(found, equals(false));
     } else {
       print(status);
     }
