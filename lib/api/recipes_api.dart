@@ -56,9 +56,14 @@ class RecipesApi {
   }
 
   static Future<http.Response> _fetchJSON(String target) {
+    // todo: error handling for no internet.
     return http.get(Uri.parse(target));
   }
 
+  /// **************************************************************************
+  /// Function to interpolate the destination, main search query and additional
+  /// parameters into a set of data ready for http request.
+  /// **************************************************************************
   static Future<http.Response> _makeQuery(String target, String query, [Map<String, String>? params]){
     if (params == null){
       params = Map<String, String>();
@@ -68,6 +73,11 @@ class RecipesApi {
     return _fetchJSON(buildReqURL(INGREDIENT, params));
   }
 
+  /// **************************************************************************
+  /// Function to get a map of the results of the ingredient search. Will at the
+  /// minimum contain a key value pair representing the http response code for
+  /// the request
+  /// **************************************************************************
   static Future<Map<String, dynamic>> getIngredients(String query, [Map<String, String>? params]) async {
     var res = await _makeQuery(INGREDIENT, query, params);
 
@@ -80,18 +90,38 @@ class RecipesApi {
     }
   }
 
-  static Future<bool> validateIngredient(String query) async{
-    Future<bool> isValid;
-
-    var ingredients = await getIngredients(query);
+  /// **************************************************************************
+  /// Function to check if the map representing a specific ingredient exists in
+  /// a list of maps
+  /// **************************************************************************
+  static bool ingredientMapExists(String query, List<dynamic> ingredients){
     bool foundIngredient = false;
-    ingredients[RESULTS].forEach((value) {
+    ingredients.forEach((value) {
       if(value[NAME] == query){
         foundIngredient = true;
       }
     });
 
     return foundIngredient;
+  }
+
+  /// **************************************************************************
+  /// Function to verify an ingredient exists in a spoonacular response map
+  /// **************************************************************************
+  static bool validateIngredientRes(String query, Map<String, dynamic> ingredients){
+    return ingredientMapExists(query, ingredients[RESULTS]);
+  }
+
+  /// **************************************************************************
+  /// Function to validate an ingredient via a spoonacular request
+  /// **************************************************************************
+  static Future<bool> validateIngredient(String query) async{
+    var ingredients = await getIngredients(query);
+    if(ingredients[STATUS] == 200) {
+      return validateIngredientRes(query, ingredients);
+    } else {
+      return false;
+    }
   }
 
 
