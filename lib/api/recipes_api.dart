@@ -21,17 +21,22 @@ Future<String> readRecipesJson() async {
 }
 
 class RecipesApi {
+  // resulting json map keys
   static const String QUERY = 'query';
   static const String STATUS = 'status';
   static const String RESULTS = 'results';
   static const String NAME = 'name';
 
+  // endpoint keys and map
   static const String INGREDIENT = "ingredient";
-  static const apiBaseURL = "https://api.spoonacular.com/";
-  static const apiArgStr = "apiKey";
   static var endPointMap = {
     INGREDIENT: "food/ingredients/search",
   };
+
+  // URL components common to all requests
+  static const API_BASE_URL = "https://api.spoonacular.com/";
+  static const API_ARG_STR = "apiKey";
+
 
   /// **************************************************************************
   /// This function will build the endpoint URL from a string value that
@@ -39,10 +44,10 @@ class RecipesApi {
   /// least the key value pair for the key 'query'
   /// *************************************************************************/
   static String buildReqURL(String endpointKey, Map<String, String> argPairs){
-    String url = apiBaseURL;
+    String url = API_BASE_URL;
 
     if(endPointMap.containsKey(endpointKey)){
-      url += "${endPointMap[endpointKey]}?$apiArgStr=$API_KEY";
+      url += "${endPointMap[endpointKey]}?$API_ARG_STR=$API_KEY";
     }
 
     if(argPairs != null){
