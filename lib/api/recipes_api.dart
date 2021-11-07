@@ -31,7 +31,6 @@ class RecipesApi {
   static const apiArgStr = "apiKey";
   static var endPointMap = {
     INGREDIENT: "food/ingredients/search",
-
   };
 
   /// **************************************************************************
@@ -74,13 +73,9 @@ class RecipesApi {
   }
 
   /// **************************************************************************
-  /// Function to get a map of the results of the ingredient search. Will at the
-  /// minimum contain a key value pair representing the http response code for
-  /// the request
+  /// Function to convert the http.Response object to a map
   /// **************************************************************************
-  static Future<Map<String, dynamic>> getIngredients(String query, [Map<String, String>? params]) async {
-    var res = await _makeQuery(INGREDIENT, query, params);
-
+  static Map<String, dynamic> _processResponse(http.Response res){
     if (res.statusCode == 200){
       var ingredientJSON = jsonDecode(res.body);
       ingredientJSON[STATUS] = 200;
@@ -88,6 +83,17 @@ class RecipesApi {
     } else {
       return {STATUS: res.statusCode};
     }
+  }
+
+  /// **************************************************************************
+  /// Function to get a map of the results of the ingredient search. Will at the
+  /// minimum contain a key value pair representing the http response code for
+  /// the request
+  /// **************************************************************************
+  static Future<Map<String, dynamic>> getIngredients(String query, [Map<String, String>? params]) async {
+    var res = await _makeQuery(INGREDIENT, query, params);
+
+    return _processResponse(res);
   }
 
   /// **************************************************************************
