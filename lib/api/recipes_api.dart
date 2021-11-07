@@ -59,11 +59,15 @@ class RecipesApi {
       throw Exception('Failed to get recipe information using Recipe IDs');
   }
 
+  /*
+ unfinished firebase stuff
   static Future<bool> doesDocExist (docID) async {
+   
     return FirebaseFirestore.instance.collection("recipes").doc(docID).get().then((doc) => {
          return doc.exists
     });
-    /*
+    */
+  /*
       var itemFound = FirebaseFirestore
                       .instance
                       .collection('doc_folder')
@@ -73,9 +77,9 @@ class RecipesApi {
       if(itemFound.exist){
 
       }
-    */
+    
 }
-
+*/
   /// *******************************************************************
   /// Generates a list of Recipe objects based on objects in the pantry
   ///*******************************************************************/
