@@ -5,7 +5,7 @@ class Recipe {
   final int timeEstimate;
   final String imageurl;
   final int servings;
-  final String instructions; 
+  final String instructions;
 
   bool dairyFree;
   bool vegan;
@@ -54,9 +54,6 @@ class Recipe {
         vegetarian: json['vegetarian'],
         instructions: json['instructions'],
         analyzedInstructions: json['analyzedInstructions'],
-
-        // below is temporary variable, will be replaced with
-        // userprofile/firebase integration
         ingredients: json['extendedIngredients'],
         sourceName: json['sourceName'],
         sourceUrl: json['sourceUrl'],

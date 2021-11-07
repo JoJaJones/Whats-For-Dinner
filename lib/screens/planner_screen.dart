@@ -35,7 +35,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipesApi.getRecipes(query);
+    final recipes = await RecipesApi.searchRecipes(query);
 
     setState(() => this.recipes = recipes);
   }
@@ -98,7 +98,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
 
   Future searchRecipes(String query) async => debounce(() async {
         // TODO will need to update for however we store recipes a user puts into the meal plan
-        final recipes = await RecipesApi.getRecipes(query);
+        final recipes = await RecipesApi.searchRecipes(query);
 
         setState(() {
           this.query = query;

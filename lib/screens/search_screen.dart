@@ -24,7 +24,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipesApi.getRecipes(query);
+    final recipes = await RecipesApi.searchRecipes(query);
 
     setState(() => this.recipes = recipes);
   }
@@ -78,7 +78,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
       );
 
   Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipesApi.getRecipes(query);
+        final recipes = await RecipesApi.searchRecipes(query);
 
         setState(() {
           this.query = query;
