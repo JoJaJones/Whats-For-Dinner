@@ -55,7 +55,7 @@ class RecipesApi {
   }
 
   static Future<http.Response> _fetchJSON(String target) {
-    // todo: error handling for no internet.
+    // todo: error handling for no internet since Uri.parse requires internet connection.
     return http.get(Uri.parse(target));
   }
 
