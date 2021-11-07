@@ -38,11 +38,11 @@ class RecipesApi {
   /// represents the type of search wanted. You must also include a Map with at
   /// least the key value pair for the key 'query'
   /// *************************************************************************/
-  static String buildReqURL(String endpoint_key, Map<String, String> argPairs){
+  static String buildReqURL(String endpointKey, Map<String, String> argPairs){
     String url = apiBaseURL;
 
-    if(endPointMap.containsKey(endpoint_key)){
-      url += "${endPointMap[endpoint_key]}?${apiArgStr}=${API_KEY}";
+    if(endPointMap.containsKey(endpointKey)){
+      url += "${endPointMap[endpointKey]}?$apiArgStr=$API_KEY";
     }
 
     if(argPairs != null){
