@@ -41,9 +41,7 @@ class FirestoreController {
   Future<void> addEntryToUserCollection(String collection, Map<String, dynamic> data) async {
     _initUser();
     if(userId != null) {
-      _db.collection("$userId-$collection").add(
-          data
-      );
+      addEntryToCollection("$userId-$collection", data)
     }
   }
 
@@ -64,16 +62,7 @@ class FirestoreController {
   Future<void> addEntryToUserDoc(String collection, String document, Map<String, dynamic> data, [bool isUpdate = false]) async {
     _initUser();
     if(userId != null) {
-      var curDoc = _db.collection("$userId-$collection").doc(document);
-      if(!isUpdate) {
-        curDoc.set(
-            data
-        );
-      } else {
-        curDoc.update(
-            data
-        );
-      }
+      addEntryToDoc("$userId-$collection", document, data);
     }
   }
 
@@ -91,7 +80,7 @@ class FirestoreController {
   Stream readUserDatabaseEntryList(String collection){
     _initUser();
     if(userId != null) {
-      return _db.collection("$userId-$collection").snapshots();
+      return readDatabaseEntryList("$userId-$collection");
     }
 
     return Stream.empty();
@@ -100,7 +89,7 @@ class FirestoreController {
   Stream readUserDatabaseEntry(String collection, String document){
     _initUser();
     if(userId != null) {
-      return _db.collection("$userId-$collection").doc(document).snapshots();
+      return readDatabaseEntry("$userId-$collection", document);
     }
 
     return Stream.empty();
