@@ -47,19 +47,33 @@ class FirestoreController {
     }
   }
 
-  Future<void> addEntryToDoc(String collection, String document, Map<String, dynamic> data) async {
+  Future<void> addEntryToDoc(String collection, String document, Map<String, dynamic> data, [bool isUpdate = false]) async {
     _initUser();
-    _db.collection(collection).doc(document).add(
-        data
-    );
-  }
-
-  Future<void> addEntryToUserDoc(String collection, String document, Map<String, dynamic> data) async {
-    _initUser();
-    if(userId != null) {
-      _db.collection("$userId-$collection").doc(document).add(
+    var curDoc = _db.collection(collection).doc(document);
+    if(!isUpdate) {
+      curDoc.set(
           data
       );
+    } else {
+      curDoc.update(
+          data
+      );
+    }
+  }
+
+  Future<void> addEntryToUserDoc(String collection, String document, Map<String, dynamic> data, [bool isUpdate = false]) async {
+    _initUser();
+    if(userId != null) {
+      var curDoc = _db.collection("$userId-$collection").doc(document);
+      if(!isUpdate) {
+        curDoc.set(
+            data
+        );
+      } else {
+        curDoc.update(
+            data
+        );
+      }
     }
   }
 
