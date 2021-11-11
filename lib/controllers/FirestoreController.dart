@@ -41,7 +41,7 @@ class FirestoreController {
   Future<void> addEntryToUserCollection(String collection, Map<String, dynamic> data) async {
     _initUser();
     if(userId != null) {
-      addEntryToCollection("$userId-$collection", data)
+      addEntryToCollection("$userId-$collection", data);
     }
   }
 
