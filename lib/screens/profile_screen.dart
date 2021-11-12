@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/controllers/UserController.dart';
 import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
+import 'package:whats_for_dinner/widgets/appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = UserManager();
     return Scaffold(
+      appBar: buildAppBar(context),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
