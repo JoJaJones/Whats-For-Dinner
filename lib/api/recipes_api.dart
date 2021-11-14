@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class RecipesApi {
+  // resulting json map keys
   static const String QUERY = 'query';
   static const String STATUS = 'status';
   static const String RESULTS = 'results';

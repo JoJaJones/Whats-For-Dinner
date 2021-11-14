@@ -1,5 +1,6 @@
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// *******************************************************************
 /// Singleton to manage Pantry and allow access from any screen of
@@ -8,11 +9,13 @@ import 'package:whats_for_dinner/models/Pantry.dart';
 ///*******************************************************************/
 class PantryManager {
   static final PantryManager _manager = PantryManager._internal();
-
-  static const PANTY_COLLECTION = "PantryItems";
+  static final FirebaseAuth auth = FirebaseAuth.instance;
+  static const PANTRY_COLLECTION = "PantryItems";
   static const NAME_KEY = "name";
   static const QUANTITY_KEY = "quantity";
   static const EXPIRATION_KEY = "expiration";
+
+  static String? userId;
 
   Pantry pantry;
 
@@ -22,6 +25,12 @@ class PantryManager {
 
   PantryManager._internal() : pantry = Pantry(){
     // read from firebase DB and load pantry with contained data
+    _loadPantry();
+  }
+
+  void _loadPantry(){
+    userId = auth.currentUser?.uid;
+    print(userId);
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]){
