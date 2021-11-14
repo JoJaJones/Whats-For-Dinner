@@ -160,12 +160,14 @@ class RecipesApi {
   /// *******************************************************************
   /// placeholder for ongoing work on firebase integration
   ///*******************************************************************/
+  /*
   static Future<Map> doesDocExist(collection, member) async {
     var userDocRef =
         FirebaseFirestore.instance.collection(collection).doc(member);
     var doc = await userDocRef.get();
     return {};
   }
+  */
 
   /// *******************************************************************
   /// Generates a list of Recipe objects based on objects in the pantry
