@@ -180,7 +180,6 @@ class RecipesApi {
     return false;
   }
 
-
   /// **************************************************************************
   /// Function to add new recipe information to the recipes collection in
   /// firebase
@@ -248,19 +247,8 @@ class RecipesApi {
         newRecipeIDs.add(entry["id"].toString());
       }
     }
-    if (newRecipeIDs.length != 0) {
-      addRecipes(newRecipeIDs);
-      
-      var infoRes = await _fetchJSON(
-          buildReqURL(RECIPE_INFO, {"ids": buildReqQuery(',', recipeIDs)}));
-      final List recipesJSON = await json.decode(infoRes.body);
+    if (newRecipeIDs.length != 0) addRecipes(newRecipeIDs);
 
-      // generate recipe objects based on recipe information response
-      // this needs to be changed to come from recipe information stored
-      // in firebase
-      recipeList = recipesJSON.map((json) => Recipe.fromJson(json)).toList()
-
-    }
     return await getRecipesFromFirebase(recipeIDs);
     //return await getRecipesFromFirebase(recipeIDs);
   }
