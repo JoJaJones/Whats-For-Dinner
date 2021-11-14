@@ -126,7 +126,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             ),
           ],
         ),
-        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.imageurl)),
+        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.image)),
         title: Text(
           recipe.title,
           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),

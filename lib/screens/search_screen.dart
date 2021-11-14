@@ -11,6 +11,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class RecipeSearchPageState extends State<SearchScreen> {
+  List<Recipe> allRecipes = [];
   List<Recipe> recipes = [];
   String query = '';
   Timer? debouncer;
@@ -24,8 +25,8 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipesApi.searchRecipes(query);
-
+    var recipes = await RecipesApi.searchRecipes(query);
+    final allRecipes = await RecipesApi.getRecipes();
     setState(() => this.recipes = recipes);
   }
 
@@ -78,12 +79,15 @@ class RecipeSearchPageState extends State<SearchScreen> {
       );
 
   Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipesApi.searchRecipes(query);
-
-        setState(() {
-          this.query = query;
-          this.recipes = recipes;
-        });
+        final filteredRecipes = await RecipesApi.searchRecipes(query);
+        if (query == "")
+          this.recipes = allRecipes;
+        else {
+          setState(() {
+            this.query = query;
+            this.recipes = filteredRecipes;
+          });
+        }
       });
 
   Widget buildRecipe(Recipe recipe, index) {
@@ -106,7 +110,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
             ),
           ],
         ),
-        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.imageurl)),
+        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.image)),
         title: Text(
           recipe.title,
           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),

@@ -3,7 +3,7 @@ class Recipe {
   final String title;
   final String summary;
   final int timeEstimate;
-  final String imageurl;
+  final String image;
   final int servings;
   final String instructions;
 
@@ -11,7 +11,7 @@ class Recipe {
   bool vegan;
   bool vegetarian;
 
-  final List ingredients;
+  //final List extendedIngredient;
   final List analyzedInstructions;
   final String sourceName;
   final String sourceUrl;
@@ -25,7 +25,7 @@ class Recipe {
     required this.title,
     required this.summary,
     required this.timeEstimate,
-    required this.imageurl,
+    required this.image,
     required this.servings,
     required this.favorited,
     required this.dairyFree,
@@ -35,7 +35,7 @@ class Recipe {
     required this.analyzedInstructions,
     // below is temporary variable, will be replaced with
     // userprofile/firebase integration
-    required this.ingredients,
+    //required this.extendedIngredient,
     required this.sourceName,
     required this.sourceUrl,
     // requried this.allergens
@@ -45,8 +45,8 @@ class Recipe {
         id: json['id'],
         title: json['title'],
         summary: json['summary'],
-        timeEstimate: json['readyInMinutes'],
-        imageurl: json['image'],
+        timeEstimate: json['timeEstimate'],
+        image: json['image'],
         servings: json['servings'],
         favorited: false,
         dairyFree: json['dairyFree'],
@@ -54,7 +54,7 @@ class Recipe {
         vegetarian: json['vegetarian'],
         instructions: json['instructions'],
         analyzedInstructions: json['analyzedInstructions'],
-        ingredients: json['extendedIngredients'],
+        //extendedIngredient: json['extendedextendedIngredient'],
         sourceName: json['sourceName'],
         sourceUrl: json['sourceUrl'],
       );
@@ -64,13 +64,13 @@ class Recipe {
         'title': title,
         'summary': summary,
         'timeEstimate': timeEstimate,
-        'imageurl': imageurl,
+        'image': image,
         'favorited': favorited,
         'servings': servings,
         'dairyFree': dairyFree,
         'vegan': vegan,
         'vegetarian': vegetarian,
-        'ingredients': ingredients,
+        //'extendedIngredient': extendedIngredient,
         'instructions': instructions,
         'analyzedInstructions': analyzedInstructions,
         'sourceName': sourceName,

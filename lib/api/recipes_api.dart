@@ -10,11 +10,16 @@ import 'package:whats_for_dinner/models/Recipe.dart';
 import 'package:http/http.dart' as http;
 import '../models/Recipe.dart';
 import '../utils/api_key.dart';
+import '../controllers/FirestoreController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:whats_for_dinner/models/Pantry.dart';
 
 class RecipesApi {
+  //final firestore = new FirestoreController();
+
   // resulting json map keys
+  static CollectionReference recipesDB =
+      FirebaseFirestore.instance.collection('recipes');
   static const String QUERY = 'query';
   static const String STATUS = 'status';
   static const String RESULTS = 'results';
@@ -34,6 +39,9 @@ class RecipesApi {
   // URL components common to all requests
   static const API_BASE_URL = "https://api.spoonacular.com/";
   static const API_ARG_STR = "apiKey";
+
+  // PLACEHOLDER - needs to be replaced with the ingredients in our pantry
+  static List ingredients = ["milk"];
 
   /// **************************************************************************
   /// This function will build the endpoint URL from a string value that
@@ -158,38 +166,27 @@ class RecipesApi {
     return query;
   }
 
-  /// *******************************************************************
-  /// placeholder for ongoing work on firebase integration
-  ///*******************************************************************/
-  /*
-  static Future<Map> doesDocExist(collection, member) async {
-    var userDocRef =
-        FirebaseFirestore.instance.collection(collection).doc(member);
-    var doc = await userDocRef.get();
-    return {};
+  /// **************************************************************************
+  /// Function to to check whether a given recipe already exists in firebase
+  /// **************************************************************************
+  static Future<bool> checkIfRecipeInfoNeeded(id) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('id', isEqualTo: id)
+        .limit(1)
+        .get();
+    if (snapshot.size == 0) return true;
+    print("its already in there returning false");
+    return false;
   }
-  */
 
-  /// *******************************************************************
-  /// Generates a list of Recipe objects based on objects in the pantry
-  ///*******************************************************************/
-  static Future<List<Recipe>> getRecipes() async {
-    // PLACEHOLDER - needs to be replaced with the ingredients in our pantry
-    List ingredients = ["eggs", "milk"];
 
-    // get relevant recipes for current ingredients
-    Map<String, String> getIdQuery = {
-      "number": NUM_RECIPES,
-      "ingredients": buildReqQuery(',+', ingredients)
-    };
-    var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
-    final List recipeIDsResponse = await json.decode(idRes.body);
-
-    // this should be replaced/expanded to only keep recipe IDs that we don't
-    // have information stored in firebase for (maybe on a 1 week duration)
-    List recipeIDs = [];
-    recipeIDsResponse.forEach((item) => recipeIDs.add(item["id"].toString()));
-
+  /// **************************************************************************
+  /// Function to add new recipe information to the recipes collection in
+  /// firebase
+  /// **************************************************************************
+  static void addRecipes(recipeIDs) async {
+    // fetch info for recipe ids not in firebase
     var infoRes = await _fetchJSON(
         buildReqURL(RECIPE_INFO, {"ids": buildReqQuery(',', recipeIDs)}));
     final List recipesJSON = await json.decode(infoRes.body);
@@ -200,7 +197,72 @@ class RecipesApi {
     List<Recipe> recipeList =
         recipesJSON.map((json) => Recipe.fromJson(json)).toList();
 
-    return recipeList;
+    for (Recipe item in recipeList) {
+      recipesDB.add(item.toJson());
+    }
+  }
+
+  /// **************************************************************************
+  /// Function to get all recipes from firebase that match the provided set of
+  /// of recipe IDs
+  /// **************************************************************************
+  static Future<List<Recipe>> getRecipesFromFirebase(recipeIDs) async {
+    print("starting getrecipes from firebase");
+    List<Recipe> result = [];
+    var stuff = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('id', whereIn: recipeIDs)
+        .get();
+    stuff.docs.forEach((doc) {
+      print((doc.data())["image"]);
+      result.add(Recipe.fromJson(doc.data()));
+    });
+    List<Recipe> myresult = [];
+    return result;
+  }
+
+  /// *******************************************************************
+  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// adds to firebase as needed
+  ///*******************************************************************/
+  static Future<List<Recipe>> getRecipes() async {
+    List<Recipe> recipeList = [];
+    List recipeIDs = [];
+    List newRecipeIDs = [];
+    //List tempRecipes = [639637, 664327];
+
+    // get relevant recipes for current ingredients
+    Map<String, String> getIdQuery = {
+      "number": NUM_RECIPES,
+      "ingredients": buildReqQuery(',+', ingredients)
+    };
+    var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
+    print(json.decode(idRes.body));
+    final List recipeIDsResponse = await json.decode(idRes.body);
+
+    // remove IDs for recipes that are already in firebase from our recipeIDlist
+
+    for (var entry in recipeIDsResponse) {
+      recipeIDs.add(entry["id"]);
+      if (await checkIfRecipeInfoNeeded(entry["id"])) {
+        newRecipeIDs.add(entry["id"].toString());
+      }
+    }
+    if (newRecipeIDs.length != 0) {
+      addRecipes(newRecipeIDs);
+      
+      var infoRes = await _fetchJSON(
+          buildReqURL(RECIPE_INFO, {"ids": buildReqQuery(',', recipeIDs)}));
+      final List recipesJSON = await json.decode(infoRes.body);
+
+      // generate recipe objects based on recipe information response
+      // this needs to be changed to come from recipe information stored
+      // in firebase
+      recipeList = recipesJSON.map((json) => Recipe.fromJson(json)).toList()
+
+    }
+    return await getRecipesFromFirebase(recipeIDs);
+    //return await getRecipesFromFirebase(recipeIDs);
   }
 
   /// *******************************************************************
