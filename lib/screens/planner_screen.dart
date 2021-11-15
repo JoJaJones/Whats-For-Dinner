@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/api/recipes_api.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
-
 import '../models/Recipe.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
 
 class PlannerScreen extends StatefulWidget {
   @override
@@ -35,7 +35,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipesApi.searchRecipes(query);
+    final recipes = await RecipeController.getAllRecipes();
 
     setState(() => this.recipes = recipes);
   }
@@ -97,9 +97,8 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   }
 
   Future searchRecipes(String query) async => debounce(() async {
+        final recipes = await RecipeController.getAllRecipes();
         // TODO will need to update for however we store recipes a user puts into the meal plan
-        final recipes = await RecipesApi.searchRecipes(query);
-
         setState(() {
           this.query = query;
           this.recipes = recipes;

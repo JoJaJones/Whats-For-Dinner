@@ -1,8 +1,11 @@
+/// *******************************************************************
+/// Class to represent a recipe
+/// *******************************************************************
 class Recipe {
   final int id;
   final String title;
   final String summary;
-  final int timeEstimate;
+  final int readyInMinutes;
   final String image;
   final int servings;
   final String instructions;
@@ -24,7 +27,7 @@ class Recipe {
     required this.id,
     required this.title,
     required this.summary,
-    required this.timeEstimate,
+    required this.readyInMinutes,
     required this.image,
     required this.servings,
     required this.favorited,
@@ -45,7 +48,7 @@ class Recipe {
         id: json['id'],
         title: json['title'],
         summary: json['summary'],
-        timeEstimate: json['timeEstimate'],
+        readyInMinutes: json['readyInMinutes'],
         image: json['image'],
         servings: json['servings'],
         favorited: false,
@@ -63,7 +66,7 @@ class Recipe {
         'id': id,
         'title': title,
         'summary': summary,
-        'timeEstimate': timeEstimate,
+        'readyInMinutes': readyInMinutes,
         'image': image,
         'favorited': favorited,
         'servings': servings,

@@ -4,6 +4,7 @@ import 'dart:async';
 import '../models/Recipe.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class RecipeSearchPageState extends State<SearchScreen> {
-  List<Recipe> allRecipes = [];
   List<Recipe> recipes = [];
   String query = '';
   Timer? debouncer;
@@ -25,8 +25,8 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future init() async {
-    var recipes = await RecipesApi.searchRecipes(query);
-    final allRecipes = await RecipesApi.getRecipes();
+    final recipes = await RecipeController.getAllRecipes();
+
     setState(() => this.recipes = recipes);
   }
 
@@ -79,15 +79,12 @@ class RecipeSearchPageState extends State<SearchScreen> {
       );
 
   Future searchRecipes(String query) async => debounce(() async {
-        final filteredRecipes = await RecipesApi.searchRecipes(query);
-        if (query == "")
-          this.recipes = allRecipes;
-        else {
-          setState(() {
-            this.query = query;
-            this.recipes = filteredRecipes;
-          });
-        }
+        final recipes = await RecipeController.searchRecipes(query);
+
+        setState(() {
+          this.query = query;
+          this.recipes = recipes;
+        });
       });
 
   Widget buildRecipe(Recipe recipe, index) {
