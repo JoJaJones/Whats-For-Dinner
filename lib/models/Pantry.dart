@@ -50,4 +50,23 @@ class Pantry {
   Map<String, double> get ingredientCounts {
     return pantryItems.map((key, value) => MapEntry(key, value.quantity));
   }
+
+  Map<String, dynamic> toMap() {
+    var data = Map<String, dynamic>();
+
+    pantryItems.forEach((key, value) {
+      data[key] = value.toMap();
+    });
+
+    return data;
+  }
+
+  void loadFromMap(Stream<dynamic> data) {
+    data.forEach((element) {
+      print(element);
+    });
+    // data.forEach((key, value) {
+    //   pantryItems[key] = IngredientType.fromMap(value);
+    // });
+  }
 }

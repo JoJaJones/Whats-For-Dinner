@@ -14,12 +14,25 @@ import 'FoodItem.dart';
 /// in the pantry or an organizing object is needed)
 /// *******************************************************************
 class IngredientType {
+  static const String NAME = 'name';
+  static const String PERISHABLE = 'perishable';
+  static const String ITEMS = 'items';
+
   String name;
   bool  isPerishable;
   List<FoodItem> items;
 
   IngredientType(this.name, this.isPerishable)
       : items = new List<FoodItem>.empty(growable: true);
+
+  IngredientType.fromMap(Map<String, dynamic> data)
+      : name = data[NAME],
+        isPerishable = data[PERISHABLE],
+        items = new List<FoodItem>.empty(growable: true) {
+    data[ITEMS].forEach((element) {
+      addIngredientFromMap(element);
+    });
+  }
 
   double get quantity {
     double sum = 0;
@@ -28,6 +41,16 @@ class IngredientType {
     });
 
     return sum;
+  }
+
+  void addIngredientFromMap(Map<String, dynamic> data) {
+    double quantity = data[FoodItem.QUANTITY];
+    DateTime? expiration;
+    if(isPerishable) {
+      expiration = data[FoodItem.EXPIRY];
+    }
+
+    addIngredient(quantity, expiration);
   }
 
   void addIngredient(double quantity, [DateTime? expiration]){
@@ -65,5 +88,17 @@ class IngredientType {
       }
     });
     return expiration ?? DateTime.utc(1900);
+  }
+
+  Map<String, dynamic> toMap() {
+    var data = Map<String, dynamic>();
+    data[PERISHABLE] = isPerishable;
+    data[ITEMS] = List<Map<String, dynamic>>.empty(growable: true);
+
+    items.forEach((element) {
+      data[ITEMS].add(element.toMap());
+    });
+
+    return data;
   }
 }

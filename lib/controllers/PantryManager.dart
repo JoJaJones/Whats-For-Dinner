@@ -1,3 +1,4 @@
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 ///*******************************************************************/
 class PantryManager {
   static final PantryManager _manager = PantryManager._internal();
-  static final FirebaseAuth auth = FirebaseAuth.instance;
   static const PANTRY_COLLECTION = "PantryItems";
   static const NAME_KEY = "name";
   static const QUANTITY_KEY = "quantity";
@@ -29,8 +29,8 @@ class PantryManager {
   }
 
   void _loadPantry(){
-    userId = auth.currentUser?.uid;
-    print(userId);
+    var data = FirestoreController().readDatabaseEntryList(PANTRY_COLLECTION);
+    pantry.loadFromMap(data);
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]){
@@ -40,6 +40,8 @@ class PantryManager {
     // add item to pantry
     pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
+
+    FirestoreController().addEntryToCollection(PANTRY_COLLECTION, pantry.toMap());
 
     return isValid;
   }
