@@ -11,10 +11,9 @@ import 'package:http/http.dart' as http;
 import '../models/Recipe.dart';
 import '../utils/api_key.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
 
 class RecipesApi {
-  //final firestore = new FirestoreController();
-
   // resulting json map keys
   static CollectionReference recipesDB =
       FirebaseFirestore.instance.collection('recipes');
@@ -39,9 +38,9 @@ class RecipesApi {
   static const API_ARG_STR = "apiKey";
 
   // PLACEHOLDER - needs to be replaced with the ingredients in our pantry
-  static List ingredients = ["sugar", "flour"];
+  //static List ingredients = ["sugar", "flour"];
 
-  static Future<List<Recipe>> recipeList = getRecipes();
+  //static Future<List<Recipe>> recipeList = getRecipes();
 
   /// **************************************************************************
   /// This function will build the endpoint URL from a string value that
@@ -150,6 +149,8 @@ class RecipesApi {
   static String buildReqQuery(separator, listItems) {
     String query = "";
     String firstQueryEnd = separator;
+    print("hello");
+    print(listItems);
     int lastIndex = listItems.length - 1;
     if (listItems.length == 1) {
       firstQueryEnd = "";
@@ -184,6 +185,7 @@ class RecipesApi {
   /// **************************************************************************
   /// Function to add new recipe information to the recipes collection in
   /// firebase
+  /// ** MOVING TO RECIPECONTROLLER W/ FIRESTORE_CONTROLLER INTERACTIONS **
   /// **************************************************************************
   static void addRecipesToFirebase(recipeIDs) async {
     var infoRes = await _fetchJSON(
@@ -206,6 +208,7 @@ class RecipesApi {
   /// **************************************************************************
   /// Function to get all recipes from firebase that match the provided set of
   /// of recipe IDs
+  /// ** MOVING TO RECIPECONTROLLER W/ FIRESTORE_CONTROLLER INTERACTIONS **
   /// **************************************************************************
   static Future<List<Recipe>> getRecipesFromFirebase(recipeIDs) async {
     List<Recipe> result = [];
@@ -216,7 +219,6 @@ class RecipesApi {
     stuff.docs.forEach((doc) {
       result.add(Recipe.fromJson(doc.data()));
     });
-    List<Recipe> myresult = [];
     return result;
   }
 
@@ -224,48 +226,64 @@ class RecipesApi {
   /// Generates a list of Recipe objects based on objects in the pantry and
   /// adds to firebase as needed
   ///*******************************************************************/
-  static Future<List<Recipe>> getRecipes() async {
+  static Future<List> getRecipeIDs(ingredientList) async {
+    List recipeIDs = [];
+    Map<String, String> getIdQuery = {
+      "number": NUM_RECIPES,
+      "ingredients": buildReqQuery(',+', ingredientList)
+    };
+    var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
+    final List recipeIDsResponse = await json.decode(idRes.body);
+    // get array of all recipe ids to get information for, as well as
+    // any recipes that need to be fetched from firebase
+    for (var entry in recipeIDsResponse) {
+      bool needed = await checkIfRecipeInfoNeeded(entry["id"]);
+      if (needed) {
+        recipeIDs.add(entry["id"]);
+        print(entry["id"]);
+      }
+    }
+    return recipeIDs;
+  }
+
+  /// *******************************************************************
+  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// adds to firebase as needed
+  ///*******************************************************************/
+  static Future<List<Recipe>> getRecipeInfo(recipeIDs) async {
+    var infoRes = await _fetchJSON(
+        buildReqURL(RECIPE_INFO, {"ids": buildReqQuery(',', recipeIDs)}));
+    final List recipesJSON = await json.decode(infoRes.body);
+    return recipesJSON.map((json) => Recipe.fromJson(json)).toList();
+  }
+
+  /// *******************************************************************
+  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// adds to firebase as needed
+  ///*******************************************************************/
+  static Future<List<Recipe>> getRecipes(ingredients) async {
     List recipeIDs = [];
     //List tempRecipes = [639637, 664327];
 
     // get relevant recipes for current ingredients
-    Map<String, String> getIdQuery = {
-      "number": NUM_RECIPES,
-      "ingredients": buildReqQuery(',+', ingredients)
-    };
-    var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
-    final List recipeIDsResponse = await json.decode(idRes.body);
+    if (ingredients.length != 0) {
+      List ingredientList = ingredients.split(',');
+      Map<String, String> getIdQuery = {
+        "number": NUM_RECIPES,
+        "ingredients": buildReqQuery(',+', ingredientList)
+      };
+      var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
+      final List recipeIDsResponse = await json.decode(idRes.body);
 
-    // get array of all recipe ids to get information for, as well as
-    // any recipes that need to be fetched from firebase
-    for (var entry in recipeIDsResponse) {
-      recipeIDs.add(entry["id"]);
-    }
-    /*
-    for (var entry in recipeIDsResponse) {
-      
-      if (await checkIfRecipeInfoNeeded(entry["id"])) {
-        newRecipeIDs.add(entry["id"].toString());
+      // get array of all recipe ids to get information for, as well as
+      // any recipes that need to be fetched from firebase
+      for (var entry in recipeIDsResponse) {
+        recipeIDs.add(entry["id"]);
       }
-    }
-    */
-    addRecipesToFirebase(recipeIDs);
-    return await getRecipesFromFirebase(recipeIDs);
-  }
 
-  /// *******************************************************************
-  /// Searches the current list of Recipe objects for those that match a
-  /// given search query
-  ///*******************************************************************/
-  static Future<List<Recipe>> searchRecipes(String query) async {
-    List<Recipe> recipeList = await getRecipes();
-
-    return recipeList.where((recipe) {
-      final titleLower = recipe.title.toLowerCase();
-      final summaryLower = recipe.summary.toLowerCase();
-      final searchLower = query.toLowerCase();
-      return titleLower.contains(searchLower) ||
-          summaryLower.contains(searchLower);
-    }).toList();
+      addRecipesToFirebase(recipeIDs);
+      return await getRecipesFromFirebase(recipeIDs);
+    } else
+      return [];
   }
 }

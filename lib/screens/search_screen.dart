@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whats_for_dinner/api/recipes_api.dart';
 import 'dart:async';
 import '../models/Recipe.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -12,9 +12,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class RecipeSearchPageState extends State<SearchScreen> {
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
   List<Recipe> recipes = [];
   String query = '';
   Timer? debouncer;
+  bool isLoading = false;
 
   final Map<int, bool> favoritedRecipes = {};
 
@@ -22,13 +24,17 @@ class RecipeSearchPageState extends State<SearchScreen> {
   void initState() {
     super.initState();
     init();
+    loadList();
   }
 
-  Future init() async {
+  Future loadList() async {
+    keyRefresh.currentState?.show();
+    await Future.delayed(Duration(milliseconds: 4000));
     final recipes = await RecipeController.getAllRecipes();
-
     setState(() => this.recipes = recipes);
   }
+
+  Future init() async {}
 
   void debounce(
     VoidCallback callback, {
@@ -65,6 +71,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0.0),
+          
           child: ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,

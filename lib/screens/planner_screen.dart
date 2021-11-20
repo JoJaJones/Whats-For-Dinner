@@ -42,7 +42,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 1000),
+    Duration duration = const Duration(milliseconds: 4000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
