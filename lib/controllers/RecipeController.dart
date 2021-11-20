@@ -80,8 +80,7 @@ class RecipeController {
   /// given search query
   ///*******************************************************************/
   static Future<List<Recipe>> searchRecipes(String query) async {
-    List<Recipe> recipeList = await getAllRecipes();
-    return recipeList.where((recipe) {
+    return allRecipes.where((recipe) {
       final titleLower = recipe.title.toLowerCase();
       final summaryLower = recipe.summary.toLowerCase();
       final searchLower = query.toLowerCase();
