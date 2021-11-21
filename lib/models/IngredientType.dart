@@ -1,6 +1,8 @@
+// import 'dart:html';
 import 'dart:math';
 
 import 'package:whats_for_dinner/models/NonperishableItem.dart';
+import 'package:whats_for_dinner/models/Pantry.dart';
 import 'package:whats_for_dinner/models/PerishableItem.dart';
 
 import 'FoodItem.dart';
@@ -26,7 +28,7 @@ class IngredientType {
       : items = new List<FoodItem>.empty(growable: true);
 
   IngredientType.fromMap(Map<String, dynamic> data)
-      : name = data[NAME],
+      : name = data[ITEMS][0][NAME],
         isPerishable = data[PERISHABLE],
         items = new List<FoodItem>.empty(growable: true) {
     data[ITEMS].forEach((element) {
@@ -47,10 +49,11 @@ class IngredientType {
     double quantity = data[FoodItem.QUANTITY];
     DateTime? expiration;
     if(isPerishable) {
-      expiration = data[FoodItem.EXPIRY];
+      expiration = data[FoodItem.EXPIRY].toDate();
     }
 
     addIngredient(quantity, expiration);
+    print(items);
   }
 
   void addIngredient(double quantity, [DateTime? expiration]){

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whats_for_dinner/controllers/FirestoreController.dart';
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
@@ -25,15 +26,18 @@ class PantryManager {
 
   PantryManager._internal() : pantry = Pantry(){
     // read from firebase DB and load pantry with contained data
-    _loadPantry();
+    if(pantry.pantryItems.length == 0) {
+      _loadPantry();
+    }
   }
 
   void _loadPantry(){
-    var data = FirestoreController().readDatabaseEntryList(PANTRY_COLLECTION);
+    var data = FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
     pantry.loadFromMap(data);
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]){
+    print(pantry.pantryItems);
     bool isValid = true;
     // check with API for validity
 
@@ -41,7 +45,11 @@ class PantryManager {
     pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
 
-    FirestoreController().addEntryToCollection(PANTRY_COLLECTION, pantry.toMap());
+    FirestoreController().addEntryToUserDoc(
+        PANTRY_COLLECTION,
+        name,
+        pantry.pantryItems[name]!.toMap()
+    );
 
     return isValid;
   }
@@ -49,10 +57,14 @@ class PantryManager {
   bool removeItem(String name, double quantity) {
     bool isValid = false;
     // check api for validity
-    if(pantry.removeIngredients(name, quantity) && isValid) {
-      // remove item from pantry
+    if(pantry.removeIngredients(name, quantity)) {
+      var fc = FirestoreController();
 
-      // update firebase db
+      if( pantry.pantryItems.containsKey(name)){
+        fc.addEntryToUserDoc(PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
+      } else {
+        fc.deleteUserDoc(PANTRY_COLLECTION, name);
+      }
     }
 
     return isValid;
