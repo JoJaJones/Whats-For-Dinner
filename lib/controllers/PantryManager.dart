@@ -37,7 +37,6 @@ class PantryManager {
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]){
-    print(pantry.pantryItems);
     bool isValid = true;
     // check with API for validity
 
