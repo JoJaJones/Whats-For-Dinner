@@ -49,41 +49,53 @@ class RecipeSearchPageState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: TextField(
-            autofocus: true,
-            //controller: _searchQuery,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                prefixIcon: Padding(
-                    padding: EdgeInsetsDirectional.only(end: 16.0),
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    )),
-                hintText: "Search Recipes...",
-                hintStyle: TextStyle(color: Colors.white60)),
-            onChanged: searchRecipes,
-          ),
-          automaticallyImplyLeading: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: TextField(
+          autofocus: true,
+          //controller: _searchQuery,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              prefixIcon: Padding(
+                  padding: EdgeInsetsDirectional.only(end: 16.0),
+                  child: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  )),
+              hintText: "Search Recipes...",
+              hintStyle: TextStyle(color: Colors.white60)),
+          onChanged: searchRecipes,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0),
-          
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            itemCount: recipes.length,
-            itemBuilder: (BuildContext context, int index) {
-              final recipe = recipes[index];
-              return buildRecipe(recipe, index);
+        automaticallyImplyLeading: false,
+      ),
+      body: //Padding(
+          RefreshIndicator(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: recipes.length,
+          itemBuilder: (BuildContext context, int index) {
+            final recipe = recipes[index];
+            return buildRecipe(recipe, index);
+          },
+          // To make listView scrollable
+          // even if there is only a single item.
+          physics: const AlwaysScrollableScrollPhysics(),
+        ),
+        // Function that will be called when
+        // user pulls the ListView downward
+        onRefresh: () {
+          return Future.delayed(
+            Duration(seconds: 1),
+            () {
+              setState(() {
+                loadList();
+              });
             },
-          ),
-        ),
-      );
+          );
+        },
+      ));
 
   Future searchRecipes(String query) async => debounce(() async {
         final recipes = await RecipeController.searchRecipes(query);
