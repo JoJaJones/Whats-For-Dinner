@@ -4,7 +4,7 @@ import '../models/Recipe.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
-import 'package:whats_for_dinner/controllers/FirestoreController.dart';
+import 'package:whats_for_dinner/widgets/SearchWidget.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -51,25 +51,25 @@ class RecipeSearchPageState extends State<SearchScreen> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: TextField(
-          autofocus: true,
-          //controller: _searchQuery,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              prefixIcon: Padding(
-                  padding: EdgeInsetsDirectional.only(end: 16.0),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.white,
-                  )),
-              hintText: "Search Recipes...",
-              hintStyle: TextStyle(color: Colors.white60)),
-          onChanged: searchRecipes,
+        title: Column(
+          children: <Widget>[
+            buildSearch(),
+          ],
         ),
-        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // do something
+            },
+          )
+        ],
       ),
-      body: //Padding(
+      body:
+          //Padding(
           RefreshIndicator(
         child: ListView.builder(
           scrollDirection: Axis.vertical,
@@ -105,6 +105,12 @@ class RecipeSearchPageState extends State<SearchScreen> {
           this.recipes = recipes;
         });
       });
+
+  Widget buildSearch() => SearchWidget(
+        text: query,
+        hintText: 'Search recipes..',
+        onChanged: searchRecipes,
+      );
 
   Widget buildRecipe(Recipe recipe, index) {
     return Card(

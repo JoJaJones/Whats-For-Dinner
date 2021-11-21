@@ -12,7 +12,7 @@ class RecipeController {
     "Mexican": false,
     "Vegetarian": false,
     "Vegan": false,
-    "IgnorePantry": false,
+    "PantryOnly": false,
   };
   static var pantry = PantryManager();
   static var firestore = FirestoreController();
