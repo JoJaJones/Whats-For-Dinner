@@ -1,17 +1,20 @@
+/// *******************************************************************
+/// Class to represent a recipe
+/// *******************************************************************
 class Recipe {
   final int id;
   final String title;
   final String summary;
-  final int timeEstimate;
-  final String imageurl;
+  final int readyInMinutes;
+  final String image;
   final int servings;
-  final String instructions; 
+  final String instructions;
 
   bool dairyFree;
   bool vegan;
   bool vegetarian;
 
-  final List ingredients;
+  //final List extendedIngredient;
   final List analyzedInstructions;
   final String sourceName;
   final String sourceUrl;
@@ -24,8 +27,8 @@ class Recipe {
     required this.id,
     required this.title,
     required this.summary,
-    required this.timeEstimate,
-    required this.imageurl,
+    required this.readyInMinutes,
+    required this.image,
     required this.servings,
     required this.favorited,
     required this.dairyFree,
@@ -35,7 +38,7 @@ class Recipe {
     required this.analyzedInstructions,
     // below is temporary variable, will be replaced with
     // userprofile/firebase integration
-    required this.ingredients,
+    //required this.extendedIngredient,
     required this.sourceName,
     required this.sourceUrl,
     // requried this.allergens
@@ -45,8 +48,8 @@ class Recipe {
         id: json['id'],
         title: json['title'],
         summary: json['summary'],
-        timeEstimate: json['readyInMinutes'],
-        imageurl: json['image'],
+        readyInMinutes: json['readyInMinutes'],
+        image: json['image'],
         servings: json['servings'],
         favorited: false,
         dairyFree: json['dairyFree'],
@@ -54,10 +57,7 @@ class Recipe {
         vegetarian: json['vegetarian'],
         instructions: json['instructions'],
         analyzedInstructions: json['analyzedInstructions'],
-
-        // below is temporary variable, will be replaced with
-        // userprofile/firebase integration
-        ingredients: json['extendedIngredients'],
+        //extendedIngredient: json['extendedextendedIngredient'],
         sourceName: json['sourceName'],
         sourceUrl: json['sourceUrl'],
       );
@@ -66,14 +66,14 @@ class Recipe {
         'id': id,
         'title': title,
         'summary': summary,
-        'timeEstimate': timeEstimate,
-        'imageurl': imageurl,
+        'readyInMinutes': readyInMinutes,
+        'image': image,
         'favorited': favorited,
         'servings': servings,
         'dairyFree': dairyFree,
         'vegan': vegan,
         'vegetarian': vegetarian,
-        'ingredients': ingredients,
+        //'extendedIngredient': extendedIngredient,
         'instructions': instructions,
         'analyzedInstructions': analyzedInstructions,
         'sourceName': sourceName,

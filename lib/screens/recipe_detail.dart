@@ -16,7 +16,7 @@ class RecipeDetailView extends StatelessWidget {
           backgroundColor: Colors.green,
           expandedHeight: 350.0,
           flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(recipe.imageurl, fit: BoxFit.cover))),
+              background: Image.network(recipe.image, fit: BoxFit.cover))),
       SliverList(
           delegate: SliverChildListDelegate([
         Padding(

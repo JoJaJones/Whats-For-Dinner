@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whats_for_dinner/api/recipes_api.dart';
 import 'dart:async';
 import '../models/Recipe.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
+import 'package:whats_for_dinner/widgets/SearchWidget.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -11,9 +12,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class RecipeSearchPageState extends State<SearchScreen> {
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
   List<Recipe> recipes = [];
   String query = '';
   Timer? debouncer;
+  bool isLoading = false;
 
   final Map<int, bool> favoritedRecipes = {};
 
@@ -21,13 +24,17 @@ class RecipeSearchPageState extends State<SearchScreen> {
   void initState() {
     super.initState();
     init();
+    loadList();
   }
 
-  Future init() async {
-    final recipes = await RecipesApi.getRecipes(query);
-
+  Future loadList() async {
+    keyRefresh.currentState?.show();
+    await Future.delayed(Duration(milliseconds: 4000));
+    final recipes = await RecipeController.getAllRecipes();
     setState(() => this.recipes = recipes);
   }
+
+  Future init() async {}
 
   void debounce(
     VoidCallback callback, {
@@ -42,49 +49,68 @@ class RecipeSearchPageState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: TextField(
-            autofocus: true,
-            //controller: _searchQuery,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                prefixIcon: Padding(
-                    padding: EdgeInsetsDirectional.only(end: 16.0),
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    )),
-                hintText: "Search Recipes...",
-                hintStyle: TextStyle(color: Colors.white60)),
-            onChanged: searchRecipes,
-          ),
-          automaticallyImplyLeading: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Column(
+          children: <Widget>[
+            buildSearch(),
+          ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0),
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            itemCount: recipes.length,
-            itemBuilder: (BuildContext context, int index) {
-              final recipe = recipes[index];
-              return buildRecipe(recipe, index);
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // do something
             },
-          ),
+          )
+        ],
+      ),
+      body:
+          //Padding(
+          RefreshIndicator(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: recipes.length,
+          itemBuilder: (BuildContext context, int index) {
+            final recipe = recipes[index];
+            return buildRecipe(recipe, index);
+          },
+          // To make listView scrollable
+          // even if there is only a single item.
+          physics: const AlwaysScrollableScrollPhysics(),
         ),
-      );
+        // Function that will be called when
+        // user pulls the ListView downward
+        onRefresh: () {
+          return Future.delayed(
+            Duration(seconds: 1),
+            () {
+              setState(() {
+                loadList();
+              });
+            },
+          );
+        },
+      ));
 
   Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipesApi.getRecipes(query);
+        final recipes = await RecipeController.searchRecipes(query);
 
         setState(() {
           this.query = query;
           this.recipes = recipes;
         });
       });
+
+  Widget buildSearch() => SearchWidget(
+        text: query,
+        hintText: 'Search recipes..',
+        onChanged: searchRecipes,
+      );
 
   Widget buildRecipe(Recipe recipe, index) {
     return Card(
@@ -106,7 +132,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
             ),
           ],
         ),
-        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.imageurl)),
+        leading: CircleAvatar(backgroundImage: NetworkImage(recipe.image)),
         title: Text(
           recipe.title,
           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),

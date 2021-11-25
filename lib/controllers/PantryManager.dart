@@ -1,6 +1,7 @@
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
 
 /// *******************************************************************
 /// Singleton to manage Pantry and allow access from any screen of
@@ -19,21 +20,21 @@ class PantryManager {
 
   Pantry pantry;
 
-  factory PantryManager(){
+  factory PantryManager() {
     return _manager;
   }
 
-  PantryManager._internal() : pantry = Pantry(){
+  PantryManager._internal() : pantry = Pantry() {
     // read from firebase DB and load pantry with contained data
     _loadPantry();
   }
 
-  void _loadPantry(){
+  void _loadPantry() {
     userId = auth.currentUser?.uid;
     print(userId);
   }
 
-  bool addItem(String name, double quantity, [DateTime? expiry]){
+  bool addItem(String name, double quantity, [DateTime? expiry]) {
     bool isValid = true;
     // check with API for validity
 
@@ -41,13 +42,16 @@ class PantryManager {
     pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
 
+    // add recipes for these ingredients to firestore
+    RecipeController.updateFirestore();
+
     return isValid;
   }
 
   bool removeItem(String name, double quantity) {
     bool isValid = false;
     // check api for validity
-    if(pantry.removeIngredients(name, quantity) && isValid) {
+    if (pantry.removeIngredients(name, quantity) && isValid) {
       // remove item from pantry
 
       // update firebase db
