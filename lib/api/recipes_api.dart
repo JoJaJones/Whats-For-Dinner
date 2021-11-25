@@ -8,49 +8,52 @@
 import 'dart:convert';
 import 'package:whats_for_dinner/models/Recipe.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart' show rootBundle;
 import '../models/Recipe.dart';
 import '../utils/api_key.dart';
-
-Future<String> readApiKey() async {
-  return await rootBundle.loadString('./apikey');
-}
-
-Future<String> readRecipesJson() async {
-  return await rootBundle.loadString('recipeInformation.json');
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecipesApi {
   // resulting json map keys
+  static CollectionReference recipesDB =
+      FirebaseFirestore.instance.collection('recipes');
   static const String QUERY = 'query';
   static const String STATUS = 'status';
   static const String RESULTS = 'results';
   static const String NAME = 'name';
+  static const NUM_RECIPES = "5";
 
   // endpoint keys and map
   static const String INGREDIENT = "ingredient";
+  static const String RECIPE_IDS = "recipe_ids";
+  static const String RECIPE_INFO = "recipe_info";
   static var endPointMap = {
     INGREDIENT: "food/ingredients/search",
+    RECIPE_IDS: "recipes/findByIngredients",
+    RECIPE_INFO: "recipes/informationBulk",
   };
 
   // URL components common to all requests
   static const API_BASE_URL = "https://api.spoonacular.com/";
   static const API_ARG_STR = "apiKey";
 
+  // PLACEHOLDER - needs to be replaced with the ingredients in our pantry
+  //static List ingredients = ["sugar", "flour"];
+
+  //static Future<List<Recipe>> recipeList = getRecipes();
 
   /// **************************************************************************
   /// This function will build the endpoint URL from a string value that
   /// represents the type of search wanted. You must also include a Map with at
   /// least the key value pair for the key 'query'
   /// *************************************************************************/
-  static String buildReqURL(String endpointKey, Map<String, String> argPairs){
+  static String buildReqURL(String endpointKey, Map<String, String> argPairs) {
     String url = API_BASE_URL;
 
-    if(endPointMap.containsKey(endpointKey)){
+    if (endPointMap.containsKey(endpointKey)) {
       url += "${endPointMap[endpointKey]}?$API_ARG_STR=$API_KEY";
     }
 
-    if(argPairs != null){
+    if (argPairs != null) {
       argPairs.forEach((key, value) {
         url += "&$key=$value";
       });
@@ -68,8 +71,9 @@ class RecipesApi {
   /// Function to interpolate the destination, main search query and additional
   /// parameters into a set of data ready for http request.
   /// **************************************************************************
-  static Future<http.Response> _makeQuery(String target, String query, [Map<String, String>? params]){
-    if (params == null){
+  static Future<http.Response> _makeQuery(String target, String query,
+      [Map<String, String>? params]) {
+    if (params == null) {
       params = Map<String, String>();
     }
     params[QUERY] = query;
@@ -80,8 +84,8 @@ class RecipesApi {
   /// **************************************************************************
   /// Function to convert the http.Response object to a map
   /// **************************************************************************
-  static Map<String, dynamic> _processResponse(http.Response res){
-    if (res.statusCode == 200){
+  static Map<String, dynamic> _processResponse(http.Response res) {
+    if (res.statusCode == 200) {
       var ingredientJSON = jsonDecode(res.body);
       ingredientJSON[STATUS] = 200;
       return ingredientJSON;
@@ -95,7 +99,8 @@ class RecipesApi {
   /// minimum contain a key value pair representing the http response code for
   /// the request
   /// **************************************************************************
-  static Future<Map<String, dynamic>> getIngredients(String query, [Map<String, String>? params]) async {
+  static Future<Map<String, dynamic>> getIngredients(String query,
+      [Map<String, String>? params]) async {
     var res = await _makeQuery(INGREDIENT, query, params);
 
     return _processResponse(res);
@@ -105,10 +110,10 @@ class RecipesApi {
   /// Function to check if the map representing a specific ingredient exists in
   /// a list of maps
   /// **************************************************************************
-  static bool ingredientMapExists(String query, List<dynamic> ingredients){
+  static bool ingredientMapExists(String query, List<dynamic> ingredients) {
     bool foundIngredient = false;
     ingredients.forEach((value) {
-      if(value[NAME] == query){
+      if (value[NAME] == query) {
         foundIngredient = true;
       }
     });
@@ -119,44 +124,95 @@ class RecipesApi {
   /// **************************************************************************
   /// Function to verify an ingredient exists in a spoonacular response map
   /// **************************************************************************
-  static bool validateIngredientRes(String query, Map<String, dynamic> ingredients){
+  static bool validateIngredientRes(
+      String query, Map<String, dynamic> ingredients) {
     return ingredientMapExists(query, ingredients[RESULTS]);
   }
 
   /// **************************************************************************
   /// Function to validate an ingredient via a spoonacular request
   /// **************************************************************************
-  static Future<bool> validateIngredient(String query) async{
+  static Future<bool> validateIngredient(String query) async {
     var ingredients = await getIngredients(query);
-    if(ingredients[STATUS] == 200) {
+    if (ingredients[STATUS] == 200) {
       return validateIngredientRes(query, ingredients);
     } else {
       return false;
     }
   }
 
+  /// **************************************************************************
+  /// Function to build the param value for a list of items based on a provided
+  /// separator for those items
+  /// **************************************************************************
+  static String buildReqQuery(separator, listItems) {
+    String query = "";
+    String firstQueryEnd = separator;
+    print("hello");
+    print(listItems);
+    int lastIndex = listItems.length - 1;
+    if (listItems.length == 1) {
+      firstQueryEnd = "";
+    }
+    for (var id in listItems) {
+      String item = id.toString();
+      if (id == listItems[0]) {
+        query += item + firstQueryEnd;
+      } else if (id == listItems[lastIndex]) {
+        query += item;
+      } else {
+        query += item + separator;
+      }
+    }
+    return query;
+  }
 
-  /* TODO: Petyon, see the getIngredients function and buildReqURL functions for
-           reference on how to handle this. You'll need to add your endpoints to
-           the endpointMap for those functions to work for you.
-  */
-  static Future<List<Recipe>> getRecipes(String query) async {
-    //final apiKey = await readApiKey();
+  /// **************************************************************************
+  /// Function to to check whether a given recipe already exists in firebase
+  /// **************************************************************************
+  static Future<bool> checkIfRecipeInfoNeeded(id) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('id', isEqualTo: id)
+        .limit(1)
+        .get();
+    if (snapshot.size == 0) return true;
+    print("it was found");
+    return false;
+  }
 
-    // placeholder before api integration is actually implemented
-    // we will first need to search by ingredients, and then take the resulting
-    // recipe ids and search on those for their associated information
-    // 'recipesByIdResponse' is a file with the raw response data from a call
-    // to that api route
-    var recipesByIDResponse = await readRecipesJson();
-    final List recipes = json.decode(recipesByIDResponse);
-    return recipes.map((json) => Recipe.fromJson(json)).where((recipe) {
-      final titleLower = recipe.title.toLowerCase();
-      final summaryLower = recipe.summary.toLowerCase();
-      final searchLower = query.toLowerCase();
+  /// *******************************************************************
+  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// adds to firebase as needed
+  ///*******************************************************************/
+  static Future<List> getRecipeIDs(ingredientList) async {
+    List recipeIDs = [];
+    Map<String, String> getIdQuery = {
+      "number": NUM_RECIPES,
+      "ingredients": buildReqQuery(',+', ingredientList)
+    };
+    var idRes = await _fetchJSON(buildReqURL(RECIPE_IDS, getIdQuery));
+    final List recipeIDsResponse = await json.decode(idRes.body);
+    // get array of all recipe ids to get information for, as well as
+    // any recipes that need to be fetched from firebase
+    for (var entry in recipeIDsResponse) {
+      bool needed = await checkIfRecipeInfoNeeded(entry["id"]);
+      if (needed) {
+        recipeIDs.add(entry["id"]);
+        print(entry["id"]);
+      }
+    }
+    return recipeIDs;
+  }
 
-      return titleLower.contains(searchLower) ||
-          summaryLower.contains(searchLower);
-    }).toList();
+  /// *******************************************************************
+  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// adds to firebase as needed
+  ///*******************************************************************/
+  static Future<List<Recipe>> getRecipeInfo(recipeIDs) async {
+    var infoRes = await _fetchJSON(
+        buildReqURL(RECIPE_INFO, {"ids": buildReqQuery(',', recipeIDs)}));
+    final List recipesJSON = await json.decode(infoRes.body);
+    return recipesJSON.map((json) => Recipe.fromJson(json)).toList();
   }
 }
