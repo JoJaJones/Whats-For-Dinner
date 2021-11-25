@@ -95,10 +95,22 @@ class FirestoreController {
     return Stream.empty();
   }
 
+  void deleteDoc(String collection, String document){
+    _db.collection(collection).doc(document).delete();
+  }
+
+  void deleteUserDoc(String collection, String document){
+    deleteDoc("$userId-$collection", document);
+  }
+
   void _initUser(){
     if(userId == null){
       userId = FirebaseAuth.instance.currentUser?.uid;
     }
+  }
+
+  void resetUser(){
+    userId = null;
   }
 
   String? get userid => userId;
