@@ -5,6 +5,8 @@
 ///*******************************************************************/
 class UserManager {
   static final UserManager _userManager = UserManager._internal();
+  static const USER_COLLECTION = "UserData";
+  static const NAME_KEY = "name";
   //todo replace these with firebase user
   final String imagePath =
       "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1387&q=80";

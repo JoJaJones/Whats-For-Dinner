@@ -5,6 +5,7 @@ import 'package:whats_for_dinner/nav.dart';
 import 'package:whats_for_dinner/screens/AddIngredientScreen.dart';
 import 'package:whats_for_dinner/screens/edit_profile_screen.dart';
 import 'package:whats_for_dinner/screens/login_screen.dart';
+import 'package:whats_for_dinner/screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,7 @@ class App extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         Nav.id: (context) => Nav(),
         EditProfileScreen.id: (context) => EditProfileScreen(),
+        ProfileScreen.id: (context) => ProfileScreen(),
         AddIngredientScreen.routeName: (context) => AddIngredientScreen(),
       },
     );

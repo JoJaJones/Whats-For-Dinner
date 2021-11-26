@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
-import 'package:whats_for_dinner/controllers/UserController.dart';
 import 'package:whats_for_dinner/screens/edit_profile_screen.dart';
 import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
 import 'package:whats_for_dinner/widgets/appbar.dart';
@@ -11,12 +11,15 @@ import 'package:whats_for_dinner/widgets/appbar.dart';
 import '../models/Recipe.dart';
 
 class ProfileScreen extends StatefulWidget {
+  static const String id = 'profile_screen';
   @override
   ProfileScreenPageState createState() => ProfileScreenPageState();
 }
 
 class ProfileScreenPageState extends State<ProfileScreen> {
-  static const String id = 'profile_screen';
+  final _auth = FirebaseAuth.instance;
+  static const String DEFAULT_PROFILE_IMAGE =
+      "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1387&q=80";
   List<Recipe> recipes = [];
   String query = '';
   Timer? debouncer;
@@ -46,7 +49,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserManager();
+    final user = _auth.currentUser;
     return Scaffold(
       appBar: buildAppBar(context),
       body: CustomScrollView(
@@ -137,30 +140,56 @@ class ProfileScreenPageState extends State<ProfileScreen> {
         });
       });
 
-  List<Widget> buildProfileList(BuildContext context, UserManager user) => [
-        // physics: BouncingScrollPhysics(),
-        ProfileWidget(
-          imagePath: user.imagePath,
-          onClicked: () async {
-            Navigator.pushNamed(context, EditProfileScreen.id);
-          },
-        ),
-        const SizedBox(height: 24),
-        buildName(user),
-        const SizedBox(height: 24),
-      ];
+  List<Widget> buildProfileList(BuildContext context, User? user) {
+    String image;
 
-  Widget buildName(UserManager user) => Column(
-        children: [
-          Text(
-            user.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            user.email,
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
-      );
+    if (user == null || user.photoURL == null) {
+      image = DEFAULT_PROFILE_IMAGE;
+    } else {
+      image = user.photoURL!;
+    }
+
+    return [
+      ProfileWidget(
+        imagePath: image,
+        onClicked: () async {
+          Navigator.pushNamed(context, EditProfileScreen.id);
+        },
+      ),
+      const SizedBox(height: 24),
+      buildName(user),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  Widget buildName(User? user) {
+    String name;
+    String email;
+
+    if (user == null || user.displayName == null) {
+      name = "tap image to edit your profile!";
+    } else {
+      name = user.displayName!;
+    }
+
+    if (user == null || user.email == null) {
+      email = "ERROR: email not found";
+    } else {
+      email = user.email!;
+    }
+
+    return Column(
+      children: [
+        Text(
+          name,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          email,
+          style: TextStyle(color: Colors.grey),
+        ),
+      ],
+    );
+  }
 }
