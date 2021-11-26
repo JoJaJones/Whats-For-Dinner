@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
+import 'package:whats_for_dinner/controllers/PantryManager.dart';
+
 import 'IngredientType.dart';
 
 /// *******************************************************************
@@ -5,6 +9,8 @@ import 'IngredientType.dart';
 /// to their pantry
 /// *******************************************************************
 class Pantry {
+  static const String FIREBASE_ID = 'fb_id';
+
   Map<String, IngredientType> pantryItems;
 
   Pantry() : pantryItems = new Map<String, IngredientType>();
@@ -49,5 +55,26 @@ class Pantry {
 
   Map<String, double> get ingredientCounts {
     return pantryItems.map((key, value) => MapEntry(key, value.quantity));
+  }
+
+  Map<String, dynamic> toMap() {
+    var data = Map<String, dynamic>();
+
+    pantryItems.forEach((key, value) {
+      data[key] = value.toMap();
+    });
+
+    return data;
+  }
+
+  void loadFromMap(Stream<dynamic> data) async {
+    await data.cast<QuerySnapshot>().forEach((element) {
+      element.docs.forEach((element) {
+        var tmp = element.data() as Map<String, dynamic>;
+        tmp[IngredientType.NAME] = element.id;
+
+        pantryItems[element.id] = IngredientType.fromMap(tmp);
+      });
+    });
   }
 }

@@ -9,4 +9,16 @@ class PerishableItem extends FoodItem {
       : expiryDate = expiry ?? DateTime.utc(1900), super(name, quantity);
 
   DateTime get expiration => expiryDate;
+
+  Map<String, dynamic> toMap() {
+    var itemMap = Map<String, dynamic>();
+
+    super.toMap().forEach((key, value) {
+      itemMap[key] = value;
+    });
+
+    itemMap[FoodItem.EXPIRY] = expiryDate;
+
+    return itemMap;
+  }
 }

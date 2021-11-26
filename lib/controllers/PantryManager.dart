@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +12,6 @@ import 'package:whats_for_dinner/controllers/RecipeController.dart';
 ///*******************************************************************/
 class PantryManager {
   static final PantryManager _manager = PantryManager._internal();
-  static final FirebaseAuth auth = FirebaseAuth.instance;
   static const PANTRY_COLLECTION = "PantryItems";
   static const NAME_KEY = "name";
   static const QUANTITY_KEY = "quantity";
@@ -26,12 +27,15 @@ class PantryManager {
 
   PantryManager._internal() : pantry = Pantry() {
     // read from firebase DB and load pantry with contained data
-    _loadPantry();
+    if (size == 0) {
+      _loadPantry();
+    }
   }
 
   void _loadPantry() {
-    userId = auth.currentUser?.uid;
-    print(userId);
+    var data =
+        FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
+    pantry.loadFromMap(data);
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]) {
@@ -42,19 +46,26 @@ class PantryManager {
     pantry.addIngredient(name, quantity, expiry);
     // add item to firebase db
 
+    FirestoreController().addEntryToUserDoc(
+        PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
+
     // add recipes for these ingredients to firestore
     RecipeController.updateFirestore();
-
     return isValid;
   }
 
   bool removeItem(String name, double quantity) {
     bool isValid = false;
     // check api for validity
-    if (pantry.removeIngredients(name, quantity) && isValid) {
-      // remove item from pantry
+    if (pantry.removeIngredients(name, quantity)) {
+      var fc = FirestoreController();
 
-      // update firebase db
+      if (pantry.pantryItems.containsKey(name)) {
+        fc.addEntryToUserDoc(
+            PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
+      } else {
+        fc.deleteUserDoc(PANTRY_COLLECTION, name);
+      }
     }
 
     return isValid;

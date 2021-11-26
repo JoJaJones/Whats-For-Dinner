@@ -219,11 +219,20 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
       formKey.currentState!.save();
       var pantry = PantryManager();
       if (_isPerishable) {
-        pantry.addItem(data[nameKey], data[quantityKey], data[expiryKey]);
+        pantry.addItem(toTitleCase(data[nameKey]), data[quantityKey], data[expiryKey]);
       } else {
-        pantry.addItem(data[nameKey], data[quantityKey]);
+        pantry.addItem(toTitleCase(data[nameKey]), data[quantityKey]);
       }
       Navigator.of(context).pop();
     }
+  }
+
+  String toTitleCase(String str) {
+    var words = List<String>.empty(growable: true);
+    str.split(" ").forEach((element) {
+      words.add('${element[0].toUpperCase()}${element.substring(1).toLowerCase()}');
+    });
+
+    return words.join(" ");
   }
 }
