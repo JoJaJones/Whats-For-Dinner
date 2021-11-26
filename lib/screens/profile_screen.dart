@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/controllers/UserController.dart';
+import 'package:whats_for_dinner/screens/edit_profile_screen.dart';
 import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
+import 'package:whats_for_dinner/widgets/appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
+  static const String id = 'profile_screen';
   @override
   Widget build(BuildContext context) {
     final user = UserManager();
     return Scaffold(
+      appBar: buildAppBar(context),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
             delegate: SliverChildListDelegate(
-              buildProfileList(user),
+              buildProfileList(context, user),
             ),
           ),
           SliverGrid(
@@ -75,11 +79,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> buildProfileList(UserManager user) => [
+  List<Widget> buildProfileList(BuildContext context, UserManager user) => [
         // physics: BouncingScrollPhysics(),
         ProfileWidget(
           imagePath: user.imagePath,
-          onClicked: () async {},
+          onClicked: () async {
+            Navigator.pushNamed(context, EditProfileScreen.id);
+          },
         ),
         const SizedBox(height: 24),
         buildName(user),
