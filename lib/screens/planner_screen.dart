@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:whats_for_dinner/api/recipes_api.dart';
-import 'package:whats_for_dinner/screens/recipe_detail.dart';
-import '../models/Recipe.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
+import 'package:whats_for_dinner/screens/recipe_detail.dart';
+
+import '../models/Recipe.dart';
 
 class PlannerScreen extends StatefulWidget {
   @override
@@ -59,7 +59,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
         itemCount: recipes.length,
         itemBuilder: (BuildContext context, int index) {
           final recipe = recipes[index];
-          return buildRecipe(recipe, index);
+          return buildRecipe(recipe);
         });
   }
 
@@ -105,7 +105,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
         });
       });
 
-  Widget buildRecipe(Recipe recipe, index) {
+  Widget buildRecipe(Recipe recipe) {
     return Card(
       child: ExpansionTile(
         trailing: Row(
