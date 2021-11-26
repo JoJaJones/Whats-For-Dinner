@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whats_for_dinner/controllers/FirestoreController.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whats_for_dinner/controllers/RecipeController.dart';
 
 /// *******************************************************************
 /// Singleton to manage Pantry and allow access from any screen of
@@ -27,13 +25,14 @@ class PantryManager {
 
   PantryManager._internal() : pantry = Pantry() {
     // read from firebase DB and load pantry with contained data
-    if(size == 0) {
+    if (size == 0) {
       _loadPantry();
     }
   }
 
-  void _loadPantry(){
-    var data = FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
+  void _loadPantry() {
+    var data =
+        FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
     pantry.loadFromMap(data);
   }
 
@@ -46,10 +45,7 @@ class PantryManager {
     // add item to firebase db
 
     FirestoreController().addEntryToUserDoc(
-        PANTRY_COLLECTION,
-        name,
-        pantry.pantryItems[name]!.toMap()
-    );
+        PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
 
     // add recipes for these ingredients to firestore
     RecipeController.updateFirestore();
@@ -60,11 +56,12 @@ class PantryManager {
   bool removeItem(String name, double quantity) {
     bool isValid = false;
     // check api for validity
-    if(pantry.removeIngredients(name, quantity)) {
+    if (pantry.removeIngredients(name, quantity)) {
       var fc = FirestoreController();
 
-      if( pantry.pantryItems.containsKey(name)){
-        fc.addEntryToUserDoc(PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
+      if (pantry.pantryItems.containsKey(name)) {
+        fc.addEntryToUserDoc(
+            PANTRY_COLLECTION, name, pantry.pantryItems[name]!.toMap());
       } else {
         fc.deleteUserDoc(PANTRY_COLLECTION, name);
       }
