@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whats_for_dinner/controllers/FirestoreController.dart';
-import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/models/IngredientType.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whats_for_dinner/controllers/RecipeController.dart';
 
 /// *******************************************************************
 /// Singleton to manage Pantry and allow access from any screen of
@@ -49,7 +51,6 @@ class PantryManager {
 
     // add recipes for these ingredients to firestore
     RecipeController.updateFirestore();
-
     return isValid;
   }
 
