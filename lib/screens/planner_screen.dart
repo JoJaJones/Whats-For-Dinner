@@ -8,6 +8,7 @@ import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import '../models/Recipe.dart';
 
 class PlannerScreen extends StatefulWidget {
+  static const String id = 'planner_screen';
   @override
   PlannerScreenPageState createState() => PlannerScreenPageState();
 }

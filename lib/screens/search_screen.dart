@@ -142,7 +142,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
                 } else {
                   try {
                     //TODO: Move into a favorites manager
-                    //Note: App needs to refresh for this to show up in profile
+                    //Note: App needs to refresh for this to update in profile
                     RecipeController.deleteRecipeFromUserCollection(
                         recipe.id.toString(), "Favorites");
                   } catch (e) {
