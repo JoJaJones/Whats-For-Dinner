@@ -1,9 +1,10 @@
-import 'package:whats_for_dinner/api/recipes_api.dart';
-import 'package:whats_for_dinner/models/Recipe.dart';
-import 'package:whats_for_dinner/controllers/PantryManager.dart';
-import 'package:whats_for_dinner/controllers/FirestoreController.dart';
-import '../models/Recipe.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whats_for_dinner/api/recipes_api.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
+import 'package:whats_for_dinner/controllers/PantryManager.dart';
+import 'package:whats_for_dinner/models/Recipe.dart';
+
+import '../models/Recipe.dart';
 
 class RecipeController {
   Map filters = {
@@ -32,6 +33,46 @@ class RecipeController {
       });
     });
     allRecipes = firestoreRecipes;
+  }
+
+  /// **************************************************************************
+  /// Function to load recipes from a given user's collection
+  /// **************************************************************************
+  static Future<List<Recipe>> loadRecipesFromCollection(
+      String collection) async {
+    List<Recipe> firestoreRecipes = [];
+    var recipes = firestore.readUserDatabaseEntryList(collection);
+    recipes.listen((snapshot) {
+      List<DocumentSnapshot> recipeData = snapshot.docs;
+      recipeData.forEach((doc) {
+        Recipe curRecipe = Recipe.fromJson(doc.data() as Map<String, dynamic>);
+        firestoreRecipes.add(curRecipe);
+      });
+    });
+    return firestoreRecipes;
+  }
+
+  /// **************************************************************************
+  /// Function to add new recipe information for a user to the passed-in
+  /// collection based on the passed list of recipe IDs
+  /// **************************************************************************
+  static Future<void> addRecipesToUserCollection(
+      String newRecipeID, String collection) async {
+    print("fetching recipe info for ${newRecipeID}");
+    List<Recipe> newRecipes = await RecipesApi.getRecipeInfo([newRecipeID]);
+    for (Recipe item in newRecipes) {
+      await firestore.addEntryToUserDoc(
+          collection, item.id.toString(), item.toJson());
+    }
+  }
+
+  /// **************************************************************************
+  /// Function to add new recipe information for a user to the passed-in
+  /// collection based on the passed list of recipe IDs
+  /// **************************************************************************
+  static void deleteRecipeFromUserCollection(
+      String recipeID, String collection) {
+    firestore.deleteUserDoc(collection, recipeID);
   }
 
   /// **************************************************************************

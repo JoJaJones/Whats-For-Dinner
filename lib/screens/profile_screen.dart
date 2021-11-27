@@ -31,14 +31,15 @@ class ProfileScreenPageState extends State<ProfileScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipeController.getAllRecipes();
+    //TODO: Move into a favorites manager
+    recipes = await RecipeController.loadRecipesFromCollection("Favorites");
 
     setState(() => this.recipes = recipes);
   }
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 4000),
+    Duration duration = const Duration(milliseconds: 500),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -75,8 +76,6 @@ class ProfileScreenPageState extends State<ProfileScreen> {
     );
   }
 
-  List<Widget> buildRecipeList(BuildContext context, int index) => [];
-
   Widget buildRecipe(int index) {
     final recipe = recipes[index];
 
@@ -102,7 +101,12 @@ class ProfileScreenPageState extends State<ProfileScreen> {
                   color: Colors.redAccent,
                 ),
                 onPressed: () {
-                  // TODO remove recipe from favorite
+                  try {
+                    //TODO: Move into a favorites manager
+                    deleteRecipe(recipe.id.toString());
+                  } catch (e) {
+                    print(e);
+                  }
                 },
               ),
               title: Text(
@@ -131,11 +135,12 @@ class ProfileScreenPageState extends State<ProfileScreen> {
     );
   }
 
-  Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipeController.getAllRecipes();
-        // TODO will need to update for however we store recipes a user puts into the meal plan
+  Future deleteRecipe(String recipeID) async => debounce(() async {
+        RecipeController.deleteRecipeFromUserCollection(recipeID, "Favorites");
+
+        recipes = await RecipeController.loadRecipesFromCollection("Favorites");
+
         setState(() {
-          this.query = query;
           this.recipes = recipes;
         });
       });
