@@ -77,7 +77,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 500),
+    Duration duration = const Duration(milliseconds: 1000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -140,9 +140,9 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             IconButton(
               icon: Icon(Icons.delete_outlined,
                   size: 25.0, color: Colors.redAccent),
-              onPressed: () {
+              onPressed: () async {
                 //TODO: Move to a Meal Planner manager
-                deleteRecipe(recipe.id.toString(), day);
+                await deleteRecipe(recipe.id.toString(), day);
               },
             ),
           ],
@@ -170,11 +170,13 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   }
 
   Future deleteRecipe(String recipeID, String day) async => debounce(() async {
-        RecipeController.deleteRecipeFromUserCollection(recipeID, day);
+        await RecipeController.deleteRecipeFromUserCollection(recipeID, day);
+        await updateDaysRecipes(day);
+      });
 
+  Future updateDaysRecipes(String day) async => debounce(() async {
         List<Recipe> tempRecipes =
             await RecipeController.loadRecipesFromUserCollection(day);
-
         switch (day) {
           case Sun:
             setState(() {

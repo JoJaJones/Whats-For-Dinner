@@ -70,8 +70,8 @@ class RecipeController {
   /// Function to add new recipe information for a user to the passed-in
   /// collection based on the passed list of recipe IDs
   /// **************************************************************************
-  static void deleteRecipeFromUserCollection(
-      String recipeID, String collection) {
+  static Future<void> deleteRecipeFromUserCollection(
+      String recipeID, String collection) async {
     firestore.deleteUserDoc(collection, recipeID);
   }
 

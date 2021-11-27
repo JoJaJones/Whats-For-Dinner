@@ -100,10 +100,10 @@ class ProfileScreenPageState extends State<ProfileScreen> {
                   Icons.favorite,
                   color: Colors.redAccent,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   try {
                     //TODO: Move into a favorites manager
-                    deleteRecipe(recipe.id.toString());
+                    await deleteRecipe(recipe.id.toString());
                   } catch (e) {
                     print(e);
                   }

@@ -124,7 +124,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
               icon: Icon(Icons.favorite_border,
                   size: 20.0,
                   color: recipe.favorited ? Colors.redAccent : Colors.brown),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   recipe.favorited = recipe.favorited
                       ? recipe.favorited = false
@@ -134,8 +134,9 @@ class RecipeSearchPageState extends State<SearchScreen> {
                   try {
                     //TODO: Move into a favorites manager
                     //Note: App needs to refresh for this to show up in profile
-                    RecipeController.addRecipesToUserCollection(
+                    await RecipeController.addRecipesToUserCollection(
                         recipe.id.toString(), "Favorites");
+                    // Restart.restartApp();
                   } catch (e) {
                     print(e);
                   }
@@ -143,7 +144,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
                   try {
                     //TODO: Move into a favorites manager
                     //Note: App needs to refresh for this to update in profile
-                    RecipeController.deleteRecipeFromUserCollection(
+                    await RecipeController.deleteRecipeFromUserCollection(
                         recipe.id.toString(), "Favorites");
                   } catch (e) {
                     print(e);

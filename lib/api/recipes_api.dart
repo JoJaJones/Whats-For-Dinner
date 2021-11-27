@@ -6,11 +6,13 @@
 /// making it dedicated to recipes.
 ///*******************************************************************/
 import 'dart:convert';
-import 'package:whats_for_dinner/models/Recipe.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:whats_for_dinner/models/Recipe.dart';
+
 import '../models/Recipe.dart';
 import '../utils/api_key.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecipesApi {
   // resulting json map keys
