@@ -38,7 +38,7 @@ class RecipeController {
   /// **************************************************************************
   /// Function to load recipes from a given user's collection
   /// **************************************************************************
-  static Future<List<Recipe>> loadRecipesFromCollection(
+  static Future<List<Recipe>> loadRecipesFromUserCollection(
       String collection) async {
     List<Recipe> firestoreRecipes = [];
     var recipes = firestore.readUserDatabaseEntryList(collection);

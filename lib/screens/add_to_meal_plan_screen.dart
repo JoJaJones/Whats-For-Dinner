@@ -60,6 +60,7 @@ class AddToMealPlanScreen extends StatelessWidget {
                 for (AddMealPlanTile day in week) {
                   if (day.dayIsChecked) {
                     print("Adding to the ${day.day} collection");
+                    // TODO Add to Planner Manager
                     RecipeController.addRecipesToUserCollection(
                         recipe.id.toString(), "${day.day}");
                   }

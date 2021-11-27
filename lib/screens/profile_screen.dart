@@ -22,7 +22,6 @@ class ProfileScreenPageState extends State<ProfileScreen> {
   static const String DEFAULT_PROFILE_IMAGE =
       "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1387&q=80";
   List<Recipe> recipes = [];
-  String query = '';
   Timer? debouncer;
 
   @override
@@ -33,7 +32,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
 
   Future init() async {
     //TODO: Move into a favorites manager
-    recipes = await RecipeController.loadRecipesFromCollection("Favorites");
+    recipes = await RecipeController.loadRecipesFromUserCollection("Favorites");
 
     setState(() => this.recipes = recipes);
   }
@@ -147,7 +146,8 @@ class ProfileScreenPageState extends State<ProfileScreen> {
   Future deleteRecipe(String recipeID) async => debounce(() async {
         RecipeController.deleteRecipeFromUserCollection(recipeID, "Favorites");
 
-        recipes = await RecipeController.loadRecipesFromCollection("Favorites");
+        recipes =
+            await RecipeController.loadRecipesFromUserCollection("Favorites");
 
         setState(() {
           this.recipes = recipes;
