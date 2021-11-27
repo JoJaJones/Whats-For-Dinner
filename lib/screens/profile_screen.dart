@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/edit_profile_screen.dart';
+import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
 import 'package:whats_for_dinner/widgets/appbar.dart';
 
@@ -115,6 +116,14 @@ class ProfileScreenPageState extends State<ProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13),
               ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetailView(recipe: recipe),
+                  ),
+                );
+              },
             ),
           ),
           Expanded(
