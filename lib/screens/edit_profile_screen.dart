@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:whats_for_dinner/screens/profile_screen.dart';
 import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -134,7 +133,7 @@ class EditProfileScreen extends StatelessWidget {
                 if (imageChanged) {
                   await user.updatePhotoURL(image);
                 }
-                Navigator.pushNamed(context, ProfileScreen.id);
+                Navigator.of(context).pop();
               } catch (e) {
                 print(e);
               }

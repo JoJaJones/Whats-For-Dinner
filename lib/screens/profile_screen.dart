@@ -39,7 +39,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 500),
+    Duration duration = const Duration(milliseconds: 2000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -167,7 +167,8 @@ class ProfileScreenPageState extends State<ProfileScreen> {
       ProfileWidget(
         imagePath: image,
         onClicked: () async {
-          Navigator.pushNamed(context, EditProfileScreen.id);
+          Navigator.pushNamed(context, EditProfileScreen.id)
+              .then((_) => setState(() {}));
         },
       ),
       const SizedBox(height: 24),
