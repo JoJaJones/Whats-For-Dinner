@@ -14,7 +14,6 @@ class Recipe {
   bool vegan;
   bool vegetarian;
 
-  //final List extendedIngredient;
   final List analyzedInstructions;
   final String sourceName;
   final String sourceUrl;
