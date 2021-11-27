@@ -9,7 +9,7 @@ class Recipe {
   final String image;
   final int servings;
   final String instructions;
-
+  final List extendedIngredients;
   bool dairyFree;
   bool vegan;
   bool vegetarian;
@@ -38,7 +38,7 @@ class Recipe {
     required this.analyzedInstructions,
     // below is temporary variable, will be replaced with
     // userprofile/firebase integration
-    //required this.extendedIngredient,
+    required this.extendedIngredients,
     required this.sourceName,
     required this.sourceUrl,
     // requried this.allergens
@@ -57,7 +57,7 @@ class Recipe {
         vegetarian: json['vegetarian'],
         instructions: json['instructions'],
         analyzedInstructions: json['analyzedInstructions'],
-        //extendedIngredient: json['extendedextendedIngredient'],
+        extendedIngredients: json['extendedIngredients'],
         sourceName: json['sourceName'],
         sourceUrl: json['sourceUrl'],
       );
@@ -73,7 +73,7 @@ class Recipe {
         'dairyFree': dairyFree,
         'vegan': vegan,
         'vegetarian': vegetarian,
-        //'extendedIngredient': extendedIngredient,
+        'extendedIngredients': extendedIngredients,
         'instructions': instructions,
         'analyzedInstructions': analyzedInstructions,
         'sourceName': sourceName,
