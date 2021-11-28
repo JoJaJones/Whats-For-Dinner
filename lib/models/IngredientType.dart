@@ -60,6 +60,7 @@ class IngredientType {
     var newItem;
     if (isPerishable){
       newItem = PerishableItem(name, quantity, expiration);
+      sortDates();
     } else {
       newItem = NonperishableItem(name, quantity);
     }
@@ -84,13 +85,7 @@ class IngredientType {
   bool get isOutOfStock => quantity <= 0;
 
   DateTime get earliestExpiration {
-    DateTime? expiration = items[0].expiration;
-    items.forEach((element) {
-      if(expiration!.compareTo(element.expiration) > 1) {
-        expiration = element.expiration;
-      }
-    });
-    return expiration ?? DateTime.utc(1900);
+    return items[0].expiration;
   }
 
   Map<String, dynamic> toMap() {
@@ -103,5 +98,14 @@ class IngredientType {
     });
 
     return data;
+  }
+
+  void sortDates() {
+    if(isPerishable){
+      items.sort((a, b) {
+        print("${a.name}: ${a.expiration} ${b.expiration} ${a.expiration.compareTo(b.expiration)}");
+        return a.expiration.compareTo(b.expiration);
+      });
+    }
   }
 }

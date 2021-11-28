@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_for_dinner/controllers/PantryManager.dart';
 import 'package:whats_for_dinner/nav.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -81,6 +82,7 @@ class LoginScreen extends StatelessWidget {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
+                        PantryManager().loadPantry();
                         Navigator.pushNamed(context, Nav.id);
                       }
                     } catch (e) {
