@@ -32,7 +32,6 @@ class PantryManager {
   }
 
   PantryManager._internal() : pantry = Pantry(), isLoaded = false {
-    print("Pantry Manager internal");
     // read from firebase DB and load pantry with contained data
     if (size == 0) {
       loadPantry();

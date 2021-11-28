@@ -54,7 +54,6 @@ class IngredientType {
     }
 
     addIngredient(quantity, expiration);
-    print(items);
   }
 
   void addIngredient(double quantity, [DateTime? expiration]){
