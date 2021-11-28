@@ -184,7 +184,7 @@ class RecipesApi {
   }
 
   /// *******************************************************************
-  /// Generates a list of Recipe objects based on objects in the pantry and
+  /// Generates a list of Recipe IDs based on objects in the pantry and
   /// adds to firebase as needed
   ///*******************************************************************/
   static Future<List> getRecipeIDs(ingredientList) async {

@@ -20,6 +20,15 @@ class RecipeSearchPageState extends State<SearchScreen> {
   Timer? debouncer;
   bool isLoading = false;
 
+  Map filters = {
+    "Chinese": false,
+    "Italian": false,
+    "Mexican": false,
+    "Vegetarian": false,
+    "Vegan": false,
+    "PantryOnly": false,
+  };
+
   final Map<int, bool> favoritedRecipes = {};
 
   @override
@@ -29,10 +38,24 @@ class RecipeSearchPageState extends State<SearchScreen> {
     loadList();
   }
 
+  loadAllSaved() {
+    if (filters["PantryOnly"]) {
+      setState(() => this.recipes = RecipeController.pantryRecipes);
+    } else {
+      setState(() => this.recipes = RecipeController.allRecipes);
+    }
+  }
+
   Future loadList() async {
+    print("PantryOnly is currently ${filters["PantryOnly"]}");
     keyRefresh.currentState?.show();
-    await Future.delayed(Duration(milliseconds: 4000));
-    final recipes = await RecipeController.getAllRecipes();
+    var grabbedList;
+    if (filters["PantryOnly"]) {
+      grabbedList = await RecipeController.getAllPantryRecipes();
+    } else {
+      grabbedList = await RecipeController.getAllRecipes();
+    }
+    var recipes = grabbedList;
     setState(() => this.recipes = recipes);
   }
 
@@ -60,14 +83,56 @@ class RecipeSearchPageState extends State<SearchScreen> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return AlertDialog(
+                          title: Text("Filter Recipes"),
+                          content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Text("Pantry Only"),
+                                    Checkbox(
+                                        checkColor: Colors.white,
+                                        value: filters["PantryOnly"],
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            filters["PantryOnly"] = value!;
+                                          });
+                                        }),
+                                  ],
+                                ),
+                              ]),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  loadList();
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: Text("Save"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
+              })
         ],
       ),
       body:
@@ -92,7 +157,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
             Duration(seconds: 1),
             () {
               setState(() {
-                loadList();
+                loadAllSaved();
               });
             },
           );
@@ -100,8 +165,8 @@ class RecipeSearchPageState extends State<SearchScreen> {
       ));
 
   Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipeController.searchRecipes(query);
-
+        final recipes = await RecipeController.searchRecipes(query,
+            pantry: filters["PantryOnly"]);
         setState(() {
           this.query = query;
           this.recipes = recipes;
