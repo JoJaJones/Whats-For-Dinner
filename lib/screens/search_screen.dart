@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import '../models/Recipe.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
+import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/widgets/SearchWidget.dart';
+
+import '../models/Recipe.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -187,12 +189,32 @@ class RecipeSearchPageState extends State<SearchScreen> {
               icon: Icon(Icons.favorite_border,
                   size: 20.0,
                   color: recipe.favorited ? Colors.redAccent : Colors.brown),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   recipe.favorited = recipe.favorited
                       ? recipe.favorited = false
                       : recipe.favorited = true;
                 });
+                if (recipe.favorited) {
+                  try {
+                    //TODO: Move into a favorites manager
+                    //Note: App needs to refresh for this to show up in profile
+                    await RecipeController.addRecipesToUserCollection(
+                        recipe.id.toString(), "Favorites");
+                    // Restart.restartApp();
+                  } catch (e) {
+                    print(e);
+                  }
+                } else {
+                  try {
+                    //TODO: Move into a favorites manager
+                    //Note: App needs to refresh for this to update in profile
+                    await RecipeController.deleteRecipeFromUserCollection(
+                        recipe.id.toString(), "Favorites");
+                  } catch (e) {
+                    print(e);
+                  }
+                }
               },
             ),
           ],

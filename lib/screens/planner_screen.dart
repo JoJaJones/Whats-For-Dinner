@@ -2,18 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:whats_for_dinner/api/recipes_api.dart';
-import 'package:whats_for_dinner/screens/recipe_detail.dart';
-import '../models/Recipe.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
+import 'package:whats_for_dinner/screens/recipe_detail.dart';
+
+import '../models/Recipe.dart';
 
 class PlannerScreen extends StatefulWidget {
+  static const String id = 'planner_screen';
   @override
   PlannerScreenPageState createState() => PlannerScreenPageState();
 }
 
 class PlannerScreenPageState extends State<PlannerScreen> {
-  List<Recipe> recipes = [];
+  List<Recipe> sunRecipes = [];
+  List<Recipe> monRecipes = [];
+  List<Recipe> tuesRecipes = [];
+  List<Recipe> wedRecipes = [];
+  List<Recipe> thursRecipes = [];
+  List<Recipe> friRecipes = [];
+  List<Recipe> satRecipes = [];
+  static const String Sun = "Sunday";
+  static const String Mon = "Monday";
+  static const String Tues = "Tuesday";
+  static const String Wed = "Wednesday";
+  static const String Thurs = "Thursday";
+  static const String Fri = "Friday";
+  static const String Sat = "Saturday";
   String query = '';
   Timer? debouncer;
   final Map<int, bool> favoritedRecipes = {};
@@ -35,14 +49,35 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   }
 
   Future init() async {
-    final recipes = await RecipeController.getAllRecipes();
+    final sunRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Sun);
+    final monRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Mon);
+    final tuesRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Tues);
+    final wedRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Wed);
+    final thursRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Thurs);
+    final friRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Fri);
+    final satRecipes =
+        await RecipeController.loadRecipesFromUserCollection(Sat);
 
-    setState(() => this.recipes = recipes);
+    setState(() {
+      this.sunRecipes = sunRecipes;
+      this.monRecipes = monRecipes;
+      this.tuesRecipes = tuesRecipes;
+      this.wedRecipes = wedRecipes;
+      this.thursRecipes = thursRecipes;
+      this.friRecipes = friRecipes;
+      this.satRecipes = satRecipes;
+    });
   }
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 4000),
+    Duration duration = const Duration(milliseconds: 1000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -51,7 +86,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
     debouncer = Timer(duration, callback);
   }
 
-  Widget buildRecipeList() {
+  Widget buildRecipeList(List<Recipe> recipes, String day) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -59,7 +94,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
         itemCount: recipes.length,
         itemBuilder: (BuildContext context, int index) {
           final recipe = recipes[index];
-          return buildRecipe(recipe, index);
+          return buildRecipe(recipe, day);
         });
   }
 
@@ -84,43 +119,30 @@ class PlannerScreenPageState extends State<PlannerScreen> {
               ),
             ),
             body: TabBarView(children: [
-              buildRecipeList(),
-              buildRecipeList(),
-              buildRecipeList(),
-              buildRecipeList(),
-              buildRecipeList(),
-              buildRecipeList(),
-              buildRecipeList(),
+              buildRecipeList(sunRecipes, Sun),
+              buildRecipeList(monRecipes, Mon),
+              buildRecipeList(tuesRecipes, Tues),
+              buildRecipeList(wedRecipes, Wed),
+              buildRecipeList(thursRecipes, Thurs),
+              buildRecipeList(friRecipes, Fri),
+              buildRecipeList(satRecipes, Sat),
             ]));
       }),
     );
   }
 
-  Future searchRecipes(String query) async => debounce(() async {
-        final recipes = await RecipeController.getAllRecipes();
-        // TODO will need to update for however we store recipes a user puts into the meal plan
-        setState(() {
-          this.query = query;
-          this.recipes = recipes;
-        });
-      });
-
-  Widget buildRecipe(Recipe recipe, index) {
+  Widget buildRecipe(Recipe recipe, String day) {
     return Card(
       child: ExpansionTile(
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.favorite_border,
-                  size: 20.0,
-                  color: recipe.favorited ? Colors.redAccent : Colors.brown),
-              onPressed: () {
-                setState(() {
-                  recipe.favorited = recipe.favorited
-                      ? recipe.favorited = false
-                      : recipe.favorited = true;
-                });
+              icon: Icon(Icons.delete_outlined,
+                  size: 25.0, color: Colors.redAccent),
+              onPressed: () async {
+                //TODO: Move to a Meal Planner manager
+                await deleteRecipe(recipe.id.toString(), day);
               },
             ),
           ],
@@ -146,4 +168,51 @@ class PlannerScreenPageState extends State<PlannerScreen> {
       ),
     );
   }
+
+  Future deleteRecipe(String recipeID, String day) async => debounce(() async {
+        await RecipeController.deleteRecipeFromUserCollection(recipeID, day);
+        await updateDaysRecipes(day);
+      });
+
+  Future updateDaysRecipes(String day) async => debounce(() async {
+        List<Recipe> tempRecipes =
+            await RecipeController.loadRecipesFromUserCollection(day);
+        switch (day) {
+          case Sun:
+            setState(() {
+              this.sunRecipes = tempRecipes;
+            });
+            break;
+          case Mon:
+            setState(() {
+              this.monRecipes = tempRecipes;
+            });
+            break;
+          case Tues:
+            setState(() {
+              this.tuesRecipes = tempRecipes;
+            });
+            break;
+          case Wed:
+            setState(() {
+              this.wedRecipes = tempRecipes;
+            });
+            break;
+          case Thurs:
+            setState(() {
+              this.thursRecipes = tempRecipes;
+            });
+            break;
+          case Fri:
+            setState(() {
+              this.friRecipes = tempRecipes;
+            });
+            break;
+          case Sat:
+            setState(() {
+              this.satRecipes = tempRecipes;
+            });
+            break;
+        }
+      });
 }
