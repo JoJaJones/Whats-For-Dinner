@@ -39,14 +39,12 @@ class _NavState extends State<Nav> {
 
   void _onNavTap(int index) {
     setState(() {
-      print(loggedInUser.email);
       _selectedScreen = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    getCurrentUser();
     return Scaffold(
         body: IndexedStack(
           index: _selectedScreen,
