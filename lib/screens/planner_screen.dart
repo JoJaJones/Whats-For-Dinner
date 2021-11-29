@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
-import 'package:whats_for_dinner/widgets/appbar.dart';
 
 import '../models/Recipe.dart';
 
@@ -102,7 +101,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildRefreshBar(context, refresh),
+      // appBar: buildRefreshBar(context, refresh),
       body: DefaultTabController(
         length: tabs.length,
         // The Builder widget is used to have a different BuildContext to access
@@ -113,7 +112,31 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             if (!tabController.indexIsChanging) {
               // Your code goes here.
               // To get index of current tab use tabController.index
-              print("current tab is: ${tabController.index}");
+              int currentTab = tabController.index;
+
+              switch (currentTab) {
+                case 0:
+                  updateDaysRecipes(Sun);
+                  break;
+                case 1:
+                  updateDaysRecipes(Mon);
+                  break;
+                case 2:
+                  updateDaysRecipes(Tues);
+                  break;
+                case 3:
+                  updateDaysRecipes(Wed);
+                  break;
+                case 4:
+                  updateDaysRecipes(Thurs);
+                  break;
+                case 5:
+                  updateDaysRecipes(Fri);
+                  break;
+                case 6:
+                  updateDaysRecipes(Sat);
+                  break;
+              }
             }
           });
           return Scaffold(
