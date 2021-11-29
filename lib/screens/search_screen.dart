@@ -62,15 +62,12 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future init() async {
-    /*
     Future.delayed(
       Duration(seconds: 5),
       () {
-        refreshList();
-        ;
+        searchRecipes("");
       },
     );
-    */
   }
 
   void debounce(
