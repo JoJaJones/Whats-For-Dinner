@@ -48,15 +48,15 @@ class RecipeSearchPageState extends State<SearchScreen> {
 
   Future loadList() async {
     List<Recipe> grabbedList = [];
+    print("PantryOnly is currently ${filters["PantryOnly"]}");
+    keyRefresh.currentState?.show();
+    if (filters["PantryOnly"]) {
+      grabbedList = await RecipeController.getAllPantryRecipes();
+    } else {
+      grabbedList = await RecipeController.getAllRecipes();
+    }
+    var recipes = grabbedList;
     Future.delayed(Duration(seconds: 2), () async {
-      print("PantryOnly is currently ${filters["PantryOnly"]}");
-      keyRefresh.currentState?.show();
-      if (filters["PantryOnly"]) {
-        grabbedList = await RecipeController.getAllPantryRecipes();
-      } else {
-        grabbedList = await RecipeController.getAllRecipes();
-      }
-      var recipes = grabbedList;
       setState(() => this.recipes = recipes);
     });
   }
