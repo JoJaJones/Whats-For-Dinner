@@ -16,6 +16,7 @@ class PantryManager {
   static const NAME_KEY = "name";
   static const QUANTITY_KEY = "quantity";
   static const EXPIRATION_KEY = "expiration";
+  bool isLoaded;
 
   static String? userId;
 
@@ -25,20 +26,34 @@ class PantryManager {
     return _manager;
   }
 
-  PantryManager._internal() : pantry = Pantry() {
+  void clear() {
+    pantry = Pantry();
+    isLoaded = false;
+  }
+
+  PantryManager._internal() : pantry = Pantry(), isLoaded = false {
     // read from firebase DB and load pantry with contained data
     if (size == 0) {
-      _loadPantry();
+      loadPantry();
     }
   }
 
-  void _loadPantry() {
-    var data =
-        FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
-    pantry.loadFromMap(data);
+  Future<bool> loadPantry() async {
+    if(size == 0) {
+      var data =
+      FirestoreController().readUserDatabaseEntryList(PANTRY_COLLECTION);
+      await pantry.loadFromMap(data);
+      return true;
+    } else {
+      return true;
+    }
   }
 
   bool addItem(String name, double quantity, [DateTime? expiry]) {
+    if(size == 0){
+      loadPantry();
+    }
+
     bool isValid = true;
     // check with API for validity
 

@@ -1,6 +1,7 @@
 // import 'dart:html';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:whats_for_dinner/models/NonperishableItem.dart';
 import 'package:whats_for_dinner/models/Pantry.dart';
 import 'package:whats_for_dinner/models/PerishableItem.dart';
@@ -53,7 +54,6 @@ class IngredientType {
     }
 
     addIngredient(quantity, expiration);
-    print(items);
   }
 
   void addIngredient(double quantity, [DateTime? expiration]){
@@ -64,9 +64,11 @@ class IngredientType {
       newItem = NonperishableItem(name, quantity);
     }
     items.add(newItem);
+    sortByDate();
   }
 
   void removeIngredient(double quantity){
+    sortByDate();
     while (quantity > 0 && items.length > 0){
       items[0].quantity -= quantity;
 
@@ -84,13 +86,8 @@ class IngredientType {
   bool get isOutOfStock => quantity <= 0;
 
   DateTime get earliestExpiration {
-    DateTime? expiration = items[0].expiration;
-    items.forEach((element) {
-      if(expiration!.compareTo(element.expiration) > 1) {
-        expiration = element.expiration;
-      }
-    });
-    return expiration ?? DateTime.utc(1900);
+    sortByDate();
+    return items[0].expiration;
   }
 
   Map<String, dynamic> toMap() {
@@ -103,5 +100,25 @@ class IngredientType {
     });
 
     return data;
+  }
+
+  double get numExpired {
+    if(!isPerishable) {
+      return 0;
+    }
+    double count = 0;
+    int idx = 0;
+    while( idx < items.length && items[idx].expiration.compareTo(DateTime.now()) < 0){
+      count += items[idx].quantity;
+      idx += 1;
+    }
+
+    return count;
+  }
+
+  void sortByDate(){
+    if(isPerishable) {
+      items.sort((a, b) => a.expiration.compareTo(b.expiration));
+    }
   }
 }

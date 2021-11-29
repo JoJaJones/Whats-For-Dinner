@@ -5,6 +5,8 @@ import 'package:whats_for_dinner/screens/planner_screen.dart';
 import 'package:whats_for_dinner/screens/profile_screen.dart';
 import 'package:whats_for_dinner/screens/search_screen.dart';
 
+import 'controllers/PantryManager.dart';
+
 class Nav extends StatefulWidget {
   static const String id = 'nav_screens';
   @override
@@ -28,6 +30,7 @@ class _NavState extends State<Nav> {
       final user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
+        PantryManager().loadPantry();
       }
     } catch (e) {
       print(e);

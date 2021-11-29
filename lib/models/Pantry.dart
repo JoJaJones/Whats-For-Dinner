@@ -67,7 +67,7 @@ class Pantry {
     return data;
   }
 
-  void loadFromMap(Stream<dynamic> data) async {
+  Future<void> loadFromMap(Stream<dynamic> data) async {
     await data.cast<QuerySnapshot>().forEach((element) {
       element.docs.forEach((element) {
         var tmp = element.data() as Map<String, dynamic>;
@@ -77,4 +77,5 @@ class Pantry {
       });
     });
   }
+
 }

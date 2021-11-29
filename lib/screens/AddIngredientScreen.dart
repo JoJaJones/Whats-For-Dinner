@@ -164,7 +164,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
     return widgets;
   }
 
-  String? nameValidator(String? value){
+  String? nameValidator(String? value) {
     var empty = isNotEmpty(value);
 
     if(empty != null) {

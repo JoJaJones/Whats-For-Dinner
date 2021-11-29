@@ -70,10 +70,21 @@ class PantryListItem extends StatelessWidget {
     );
     
     if(curIngredient.isPerishable && EXPIRY_ENABLED){
+      Color? color;
+      String dateText;
+      if(curIngredient.items[0].expiration.compareTo(DateTime.now()) < 0){
+        color = Color(Colors.pink.value);
+        dateText = "${curIngredient.numExpired} expired: ";
+      } else {
+        dateText = "use by: ";
+      }
+
+      dateText += "${curIngredient.earliestExpiration.month}-"
+          "${curIngredient.earliestExpiration.day}-"
+          "${curIngredient.earliestExpiration.year}";
+
       children.add(
-        ContentText("use by: ${curIngredient.earliestExpiration.month}-"
-            "${curIngredient.earliestExpiration.day}-"
-            "${curIngredient.earliestExpiration.year}")
+        ContentText(dateText, color: color,)
       );
     }
     return children;

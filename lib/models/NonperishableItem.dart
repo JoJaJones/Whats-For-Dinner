@@ -9,7 +9,7 @@ class NonperishableItem extends FoodItem {
       : super(name, quantity);
 
   DateTime get expiration {
-    var now = DateTime.now();
-    return now.add(const Duration(days: 365));
+    var now = DateTime.utc(1900);
+    return now;
   }
 }

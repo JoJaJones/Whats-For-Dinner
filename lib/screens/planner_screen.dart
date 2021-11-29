@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
+import 'package:whats_for_dinner/widgets/appbar.dart';
 
 import '../models/Recipe.dart';
 
@@ -100,34 +101,37 @@ class PlannerScreenPageState extends State<PlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabs.length,
-      // The Builder widget is used to have a different BuildContext to access
-      // closest DefaultTabController.
-      child: Builder(builder: (BuildContext context) {
-        final TabController tabController = DefaultTabController.of(context)!;
-        tabController.addListener(() {
-          if (!tabController.indexIsChanging) {
-            // Your code goes here.
-            // To get index of current tab use tabController.index
-          }
-        });
-        return Scaffold(
-            appBar: AppBar(
-              bottom: const TabBar(
-                tabs: tabs,
+    return Scaffold(
+      appBar: buildRefreshBar(context, refresh),
+      body: DefaultTabController(
+        length: tabs.length,
+        // The Builder widget is used to have a different BuildContext to access
+        // closest DefaultTabController.
+        child: Builder(builder: (BuildContext context) {
+          final TabController tabController = DefaultTabController.of(context)!;
+          tabController.addListener(() {
+            if (!tabController.indexIsChanging) {
+              // Your code goes here.
+              // To get index of current tab use tabController.index
+            }
+          });
+          return Scaffold(
+              appBar: AppBar(
+                bottom: const TabBar(
+                  tabs: tabs,
+                ),
               ),
-            ),
-            body: TabBarView(children: [
-              buildRecipeList(sunRecipes, Sun),
-              buildRecipeList(monRecipes, Mon),
-              buildRecipeList(tuesRecipes, Tues),
-              buildRecipeList(wedRecipes, Wed),
-              buildRecipeList(thursRecipes, Thurs),
-              buildRecipeList(friRecipes, Fri),
-              buildRecipeList(satRecipes, Sat),
-            ]));
-      }),
+              body: TabBarView(children: [
+                buildRecipeList(sunRecipes, Sun),
+                buildRecipeList(monRecipes, Mon),
+                buildRecipeList(tuesRecipes, Tues),
+                buildRecipeList(wedRecipes, Wed),
+                buildRecipeList(thursRecipes, Thurs),
+                buildRecipeList(friRecipes, Fri),
+                buildRecipeList(satRecipes, Sat),
+              ]));
+        }),
+      ),
     );
   }
 
@@ -215,4 +219,10 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             break;
         }
       });
+
+  void refresh(){
+    setState(() {
+
+    });
+  }
 }

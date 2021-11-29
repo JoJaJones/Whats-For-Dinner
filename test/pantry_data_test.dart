@@ -22,7 +22,7 @@ void main(){
 
   test("Add new item to pantry", (){
     p.addIngredient(CORN, 5);
-    var expiry = DateTime.now().add(const Duration(days: 365));
+    var expiry = DateTime.utc(1900);
     expect(p.ingredientString, equals("${TOMATO},${CORN}")); // might need to be updated if sorting method (no sort) changes
     expect(p.ingredientCounts[CORN], moreOrLessEquals(5));
     expect(isClose(p.pantryItems[CORN]!.items[0].expiration, expiry), equals(true));
