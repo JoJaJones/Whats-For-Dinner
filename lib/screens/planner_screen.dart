@@ -113,6 +113,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             if (!tabController.indexIsChanging) {
               // Your code goes here.
               // To get index of current tab use tabController.index
+              print("current tab is: ${tabController.index}");
             }
           });
           return Scaffold(
@@ -220,9 +221,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
         }
       });
 
-  void refresh(){
-    setState(() {
-
-    });
+  void refresh() {
+    setState(() {});
   }
 }
