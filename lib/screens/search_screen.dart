@@ -5,7 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/widgets/SearchWidget.dart';
-
+import 'package:whats_for_dinner/nav.dart';
 import '../models/Recipe.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -47,19 +47,31 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future loadList() async {
-    print("PantryOnly is currently ${filters["PantryOnly"]}");
-    keyRefresh.currentState?.show();
-    var grabbedList;
-    if (filters["PantryOnly"]) {
-      grabbedList = await RecipeController.getAllPantryRecipes();
-    } else {
-      grabbedList = await RecipeController.getAllRecipes();
-    }
-    var recipes = grabbedList;
-    setState(() => this.recipes = recipes);
+    List<Recipe> grabbedList = [];
+    Future.delayed(Duration(seconds: 2), () async {
+      print("PantryOnly is currently ${filters["PantryOnly"]}");
+      keyRefresh.currentState?.show();
+      if (filters["PantryOnly"]) {
+        grabbedList = await RecipeController.getAllPantryRecipes();
+      } else {
+        grabbedList = await RecipeController.getAllRecipes();
+      }
+      var recipes = grabbedList;
+      setState(() => this.recipes = recipes);
+    });
   }
 
-  Future init() async {}
+  Future init() async {
+    /*
+    Future.delayed(
+      Duration(seconds: 5),
+      () {
+        refreshList();
+        ;
+      },
+    );
+    */
+  }
 
   void debounce(
     VoidCallback callback, {
@@ -135,34 +147,34 @@ class RecipeSearchPageState extends State<SearchScreen> {
               })
         ],
       ),
-      body:
-          //Padding(
-          RefreshIndicator(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: recipes.length,
-          itemBuilder: (BuildContext context, int index) {
-            final recipe = recipes[index];
-            return buildRecipe(recipe, index);
-          },
-          // To make listView scrollable
-          // even if there is only a single item.
-          physics: const AlwaysScrollableScrollPhysics(),
-        ),
-        // Function that will be called when
-        // user pulls the ListView downward
-        onRefresh: () {
-          return Future.delayed(
-            Duration(seconds: 1),
-            () {
-              setState(() {
-                loadAllSaved();
-              });
+      body: StreamBuilder(builder: (context, projectSnap) {
+        return RefreshIndicator(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: recipes.length,
+            itemBuilder: (BuildContext context, int index) {
+              final recipe = recipes[index];
+              return buildRecipe(recipe, index);
             },
-          );
-        },
-      ));
+            // To make listView scrollable
+            // even if there is only a single item.
+            physics: const AlwaysScrollableScrollPhysics(),
+          ),
+          // Function that will be called when
+          // user pulls the ListView downward
+          onRefresh: () {
+            return Future.delayed(
+              Duration(seconds: 1),
+              () {
+                setState(() {
+                  loadAllSaved();
+                });
+              },
+            );
+          },
+        );
+      }));
 
   Future searchRecipes(String query) async => debounce(() async {
         final recipes = await RecipeController.searchRecipes(query,
