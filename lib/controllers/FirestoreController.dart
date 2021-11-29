@@ -110,6 +110,7 @@ class FirestoreController {
   }
 
   void resetUser(){
+    FirebaseAuth.instance.signOut();
     userId = null;
   }
 

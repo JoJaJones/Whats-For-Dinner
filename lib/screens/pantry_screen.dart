@@ -3,6 +3,8 @@ import 'package:whats_for_dinner/controllers/PantryManager.dart';
 import 'package:whats_for_dinner/screens/AddIngredientScreen.dart';
 import 'package:whats_for_dinner/widgets/PantryList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whats_for_dinner/widgets/appbar.dart';
+import 'package:whats_for_dinner/widgets/components/SimpleComponents.dart';
 
 class PantryScreen extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class _PantryScreenState extends State<PantryScreen> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      appBar: buildRefreshBar(context, refresh),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(
