@@ -27,7 +27,7 @@ AppBar buildAppBar(BuildContext context) {
 final _auth = FirebaseAuth.instance;
 AppBar buildRefreshBar(BuildContext context, var refresh) {
   return AppBar(
-    title: TitleText("What's for Dinner?"),
+    title: TitleText("What's for Dinner?", fontSize: 20, color: Color(Colors.white.value),),
     actions: [
       refreshButton(context, refresh),
       signoutButton(context)
@@ -47,7 +47,8 @@ AppBar buildMultiActionAppBar(BuildContext context, List<IconButton> actions){
 IconButton refreshButton(BuildContext context, var refresh) {
   return IconButton(
       onPressed: refresh,
-      icon: Icon(Icons.autorenew)
+      icon: Icon(Icons.autorenew),
+      color: Color(Colors.white.value),
   );
 }
 
@@ -58,6 +59,7 @@ IconButton signoutButton(BuildContext context) {
       FirestoreController().resetUser();
       Navigator.pushNamed(context, LoginScreen.id);
     },
+    color:Color(Colors.white.value),
     icon: Icon(Icons.logout)
   );
 }
