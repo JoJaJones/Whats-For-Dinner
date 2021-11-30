@@ -55,7 +55,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = _auth.currentUser;
     return Scaffold(
-      appBar: buildMultiActionAppBar(context, makeActions()),
+      appBar: buildRefreshBar(context, refresh),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
@@ -209,22 +209,6 @@ class ProfileScreenPageState extends State<ProfileScreen> {
         ),
       ],
     );
-  }
-
-  List<IconButton> makeActions() {
-    var l = List<IconButton>.empty(growable: true);
-
-    l.add(IconButton(onPressed: refresh, icon: Icon(Icons.autorenew)));
-    l.add(IconButton(
-        onPressed: () {
-          _auth.signOut();
-          PantryManager().clear();
-          FirestoreController().resetUser();
-          Navigator.pushNamed(context, LoginScreen.id);
-        },
-        icon: Icon(Icons.logout)));
-
-    return l;
   }
 
   void refresh() {
