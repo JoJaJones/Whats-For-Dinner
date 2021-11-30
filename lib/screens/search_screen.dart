@@ -5,6 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
 import 'package:whats_for_dinner/widgets/SearchWidget.dart';
+import 'package:whats_for_dinner/widgets/appbar.dart';
 import 'package:whats_for_dinner/nav.dart';
 import '../models/Recipe.dart';
 
@@ -47,9 +48,9 @@ class RecipeSearchPageState extends State<SearchScreen> {
   }
 
   Future loadList() async {
-    List<Recipe> grabbedList = [];
     print("PantryOnly is currently ${filters["PantryOnly"]}");
     keyRefresh.currentState?.show();
+    var grabbedList;
     if (filters["PantryOnly"]) {
       grabbedList = await RecipeController.getAllPantryRecipes();
     } else {
@@ -61,16 +62,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
     });
   }
 
-  Future init() async {
-    /*
-    Future.delayed(
-      Duration(seconds: 5),
-      () {
-        searchRecipes("");
-      },
-    );
-    */
-  }
+  Future init() async {}
 
   void debounce(
     VoidCallback callback, {
@@ -86,6 +78,7 @@ class RecipeSearchPageState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Column(
           children: <Widget>[
@@ -143,7 +136,9 @@ class RecipeSearchPageState extends State<SearchScreen> {
                     );
                   },
                 );
-              })
+              }),
+          refreshButton(context, refresh),
+          signoutButton(context)
         ],
       ),
       body: StreamBuilder(builder: (context, projectSnap) {
@@ -250,5 +245,11 @@ class RecipeSearchPageState extends State<SearchScreen> {
         ],
       ),
     );
+  }
+
+  void refresh(){
+    setState(() {
+
+    });
   }
 }

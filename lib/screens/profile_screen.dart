@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_for_dinner/controllers/FirestoreController.dart';
+import 'package:whats_for_dinner/controllers/PantryManager.dart';
 import 'package:whats_for_dinner/controllers/RecipeController.dart';
 import 'package:whats_for_dinner/screens/edit_profile_screen.dart';
 import 'package:whats_for_dinner/screens/recipe_detail.dart';
@@ -10,6 +12,7 @@ import 'package:whats_for_dinner/widgets/ProfileWidget.dart';
 import 'package:whats_for_dinner/widgets/appbar.dart';
 
 import '../models/Recipe.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String id = 'profile_screen';
@@ -39,7 +42,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 2000),
+    Duration duration = const Duration(milliseconds: 1000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -52,7 +55,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = _auth.currentUser;
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildMultiActionAppBar(context, makeActions()),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
@@ -206,5 +209,32 @@ class ProfileScreenPageState extends State<ProfileScreen> {
         ),
       ],
     );
+  }
+
+  List<IconButton> makeActions() {
+    var l = List<IconButton>.empty(growable: true);
+
+    l.add(IconButton(onPressed: refresh, icon: Icon(Icons.autorenew)));
+    l.add(IconButton(
+        onPressed: () {
+          _auth.signOut();
+          PantryManager().clear();
+          FirestoreController().resetUser();
+          Navigator.pushNamed(context, LoginScreen.id);
+        },
+        icon: Icon(Icons.logout)));
+
+    return l;
+  }
+
+  void refresh() {
+    debounce(() async {
+      List<Recipe> tempRecipes =
+          await RecipeController.loadRecipesFromUserCollection("Favorites");
+
+      setState(() {
+        this.recipes = tempRecipes;
+      });
+    });
   }
 }

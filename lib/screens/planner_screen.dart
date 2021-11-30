@@ -100,34 +100,62 @@ class PlannerScreenPageState extends State<PlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabs.length,
-      // The Builder widget is used to have a different BuildContext to access
-      // closest DefaultTabController.
-      child: Builder(builder: (BuildContext context) {
-        final TabController tabController = DefaultTabController.of(context)!;
-        tabController.addListener(() {
-          if (!tabController.indexIsChanging) {
-            // Your code goes here.
-            // To get index of current tab use tabController.index
-          }
-        });
-        return Scaffold(
-            appBar: AppBar(
-              bottom: const TabBar(
-                tabs: tabs,
+    return Scaffold(
+      // appBar: buildRefreshBar(context, refresh),
+      body: DefaultTabController(
+        length: tabs.length,
+        // The Builder widget is used to have a different BuildContext to access
+        // closest DefaultTabController.
+        child: Builder(builder: (BuildContext context) {
+          final TabController tabController = DefaultTabController.of(context)!;
+          tabController.addListener(() {
+            if (!tabController.indexIsChanging) {
+              // Your code goes here.
+              // To get index of current tab use tabController.index
+              int currentTab = tabController.index;
+
+              switch (currentTab) {
+                case 0:
+                  updateDaysRecipes(Sun);
+                  break;
+                case 1:
+                  updateDaysRecipes(Mon);
+                  break;
+                case 2:
+                  updateDaysRecipes(Tues);
+                  break;
+                case 3:
+                  updateDaysRecipes(Wed);
+                  break;
+                case 4:
+                  updateDaysRecipes(Thurs);
+                  break;
+                case 5:
+                  updateDaysRecipes(Fri);
+                  break;
+                case 6:
+                  updateDaysRecipes(Sat);
+                  break;
+              }
+            }
+          });
+          return Scaffold(
+              appBar: AppBar(
+                bottom: const TabBar(
+                  tabs: tabs,
+                ),
               ),
-            ),
-            body: TabBarView(children: [
-              buildRecipeList(sunRecipes, Sun),
-              buildRecipeList(monRecipes, Mon),
-              buildRecipeList(tuesRecipes, Tues),
-              buildRecipeList(wedRecipes, Wed),
-              buildRecipeList(thursRecipes, Thurs),
-              buildRecipeList(friRecipes, Fri),
-              buildRecipeList(satRecipes, Sat),
-            ]));
-      }),
+              body: TabBarView(children: [
+                buildRecipeList(sunRecipes, Sun),
+                buildRecipeList(monRecipes, Mon),
+                buildRecipeList(tuesRecipes, Tues),
+                buildRecipeList(wedRecipes, Wed),
+                buildRecipeList(thursRecipes, Thurs),
+                buildRecipeList(friRecipes, Fri),
+                buildRecipeList(satRecipes, Sat),
+              ]));
+        }),
+      ),
     );
   }
 
@@ -215,4 +243,8 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             break;
         }
       });
+
+  void refresh() {
+    setState(() {});
+  }
 }
