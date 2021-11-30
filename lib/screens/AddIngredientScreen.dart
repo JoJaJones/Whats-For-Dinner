@@ -24,7 +24,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text('What\'s for Dinner?'),
+        title: Text('What\'s for Dinner?', style: TextStyle(color: Color(Colors.white.value)),),
       ),
       body: 
       SingleChildScrollView(
