@@ -113,13 +113,36 @@ class PlannerScreenPageState extends State<PlannerScreen> {
             if (!tabController.indexIsChanging) {
               // Your code goes here.
               // To get index of current tab use tabController.index
+              int currentTab = tabController.index;
+
+              switch (currentTab) {
+                case 0:
+                  updateDaysRecipes(Sun);
+                  break;
+                case 1:
+                  updateDaysRecipes(Mon);
+                  break;
+                case 2:
+                  updateDaysRecipes(Tues);
+                  break;
+                case 3:
+                  updateDaysRecipes(Wed);
+                  break;
+                case 4:
+                  updateDaysRecipes(Thurs);
+                  break;
+                case 5:
+                  updateDaysRecipes(Fri);
+                  break;
+                case 6:
+                  updateDaysRecipes(Sat);
+                  break;
+              }
             }
           });
           return Scaffold(
-              appBar: AppBar(
-                bottom: const TabBar(
-                  tabs: tabs,
-                ),
+              appBar: TabBar(
+                tabs: tabs,
               ),
               body: TabBarView(children: [
                 buildRecipeList(sunRecipes, Sun),
@@ -220,9 +243,7 @@ class PlannerScreenPageState extends State<PlannerScreen> {
         }
       });
 
-  void refresh(){
-    setState(() {
-
-    });
+  void refresh() {
+    setState(() {});
   }
 }

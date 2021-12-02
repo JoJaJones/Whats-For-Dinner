@@ -42,7 +42,7 @@ class ProfileScreenPageState extends State<ProfileScreen> {
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 2000),
+    Duration duration = const Duration(milliseconds: 1000),
   }) {
     if (debouncer != null) {
       debouncer!.cancel();
@@ -211,9 +211,14 @@ class ProfileScreenPageState extends State<ProfileScreen> {
     );
   }
 
-  void refresh(){
-    setState(() {
+  void refresh() {
+    debounce(() async {
+      List<Recipe> tempRecipes =
+          await RecipeController.loadRecipesFromUserCollection("Favorites");
 
+      setState(() {
+        this.recipes = tempRecipes;
+      });
     });
   }
 }
